@@ -1,2 +1,1 @@
-# StatLab
-Security-focused Python automation framework demonstrating defensive programming practices, secure file handling, subprocess allowlisting, and structured audit logging.
+​StatLab is a self-contained statistical computing toolkit designed to execute comprehensive data analysis, predictive modeling, and hypothesis testing. Featuring a native mathematical engine optimized for textbook-accurate data processing, the platform includes dedicated modules for advanced descriptive statistics, bi-directional probability distribution lookups (Normal, Binomial, Poisson, t, and \chi^2), frequentist hypothesis testing with automated verdicts, Ordinary Least Squares (OLS) linear regression, and customizable confidence interval estimation.
