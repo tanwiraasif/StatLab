@@ -1,0 +1,2907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>StatLab · Statistics Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET & BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #f6f8fc;
+            color: #1e293b;
+            font-size: 15px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        ::selection {
+            background: #4f8cf7;
+            color: #fff;
+        }
+        a,
+        button {
+            cursor: pointer;
+        }
+
+        /* ========== LAYOUT ========== */
+        .app {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 16px 20px 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .app-content {
+            flex: 1;
+            padding-bottom: 20px;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0 16px;
+            border-bottom: 1px solid #e9edf4;
+            margin-bottom: 20px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4f8cf7, #6c5ce7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        .brand-name {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.02em;
+            color: #1e293b;
+        }
+        .brand-name span {
+            color: #4f8cf7;
+        }
+        .header-version {
+            font-size: 11px;
+            color: #94a3b8;
+            background: #f1f4f9;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ========== TOP NAV ========== */
+        .top-nav {
+            display: flex;
+            gap: 4px;
+            background: #f1f4f9;
+            padding: 4px;
+            border-radius: 14px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+        }
+        .top-nav::-webkit-scrollbar {
+            display: none;
+        }
+        .nav-btn {
+            flex: 0 0 auto;
+            background: transparent;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.15s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+        .nav-btn.active {
+            background: #ffffff;
+            color: #1e293b;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .nav-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== PANELS ========== */
+        .panel {
+            display: none;
+            animation: fadeSlide 0.2s ease;
+        }
+        .panel.active {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: box-shadow 0.15s;
+        }
+        .card:focus-within {
+            box-shadow: 0 4px 12px rgba(79, 140, 247, 0.08);
+        }
+        .card-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e9edf4;
+        }
+
+        /* ========== FIELDS ========== */
+        .field {
+            margin-bottom: 14px;
+        }
+        .field:last-child {
+            margin-bottom: 0;
+        }
+        .field-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 4px;
+        }
+        .field-hint {
+            display: block;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+        textarea,
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #1e293b;
+            resize: vertical;
+            outline: none;
+            transition: border 0.15s, box-shadow 0.15s;
+            -webkit-appearance: none;
+        }
+        textarea:focus,
+        input:focus,
+        select:focus {
+            border-color: #4f8cf7;
+            box-shadow: 0 0 0 3px rgba(79, 140, 247, 0.12);
+        }
+        textarea {
+            min-height: 80px;
+            line-height: 1.6;
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .btn {
+            appearance: none;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.12s;
+            min-height: 44px;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-primary {
+            background: #4f8cf7;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(79, 140, 247, 0.25);
+            flex: 2;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(79, 140, 247, 0.35);
+            background: #3b7be0;
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            flex: 1;
+        }
+        .btn-ghost:hover {
+            border-color: #94a3b8;
+            color: #1e293b;
+            background: #f8fafc;
+        }
+
+        /* ========== SEG CONTROLS ========== */
+        .seg {
+            display: flex;
+            gap: 4px;
+            background: #f1f4f9;
+            border-radius: 40px;
+            padding: 4px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+        .seg-btn {
+            flex: 1 0 auto;
+            appearance: none;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.12s;
+            min-height: 34px;
+            white-space: nowrap;
+        }
+        .seg-btn.active {
+            background: #ffffff;
+            color: #1e293b;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+        .seg-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== STAT GRID ========== */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .stat-cell {
+            background: #f8fafc;
+            border: 1px solid #e9edf4;
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .stat-cell.wide {
+            grid-column: 1 / -1;
+        }
+        .s-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 2px;
+        }
+        .s-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 17px;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+        }
+        .s-val.hi {
+            color: #4f8cf7;
+        }
+        .s-val.cyan {
+            color: #6c5ce7;
+        }
+        .s-val.sm {
+            font-size: 13px;
+        }
+
+        /* ========== VERDICT ========== */
+        .verdict {
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-size: 13px;
+            line-height: 1.6;
+            background: #f0f7ff;
+            border: 1px solid #dbe7f9;
+            margin-top: 8px;
+        }
+        .verdict.reject {
+            background: #fff5f5;
+            border-color: #fed7d7;
+        }
+        .verdict strong {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #4f8cf7;
+        }
+
+        /* ========== CHIPS ========== */
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .chip {
+            background: #f1f4f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: #475569;
+        }
+        .chip b {
+            color: #4f8cf7;
+            font-weight: 500;
+        }
+
+        /* ========== CHART WRAP ========== */
+        .chart-wrap {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 1px solid #e9edf4;
+            margin-top: 8px;
+        }
+        .chart-wrap canvas {
+            display: block;
+            width: 100%;
+            height: 170px;
+        }
+
+        /* ========== MISC ========== */
+        .err {
+            font-size: 12px;
+            color: #ef4444;
+            margin: 8px 0 0;
+            min-height: 0;
+        }
+        .err:empty {
+            display: none;
+        }
+        .formula {
+            display: inline-block;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #4f46e5;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            border-radius: 6px;
+            padding: 4px 10px;
+            margin-top: 2px;
+        }
+        .tool-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #4f8cf7;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 30px;
+            padding: 2px 14px;
+            margin-bottom: 14px;
+        }
+        .predict-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .predict-row input {
+            flex: 1;
+            min-width: 80px;
+        }
+        .predict-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+            color: #4f46e5;
+            white-space: nowrap;
+            background: #f8fafc;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            min-width: 80px;
+            text-align: center;
+        }
+        .ss-result {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .ss-n {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 40px;
+            font-weight: 500;
+            color: #4f8cf7;
+            line-height: 1;
+        }
+        .ss-label {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .export-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .export-btn {
+            flex: 1 1 auto;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.12s;
+        }
+        .export-btn:hover {
+            border-color: #4f8cf7;
+            color: #4f8cf7;
+            background: #f0f7ff;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* ========== BOTTOM BAR ========== */
+        .bottom-bar {
+            background: #ffffff;
+            border-top: 1px solid #e9edf4;
+            padding: 12px 20px;
+            margin: 0 -20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            flex-shrink: 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+            margin-top: auto;
+        }
+        .bottom-bar .bb-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .bottom-bar .bb-left .bb-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #f8fafc;
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid #e9edf4;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #475569;
+        }
+        .bottom-bar .bb-left .bb-stat b {
+            color: #1e293b;
+            font-weight: 600;
+        }
+        .bottom-bar .bb-left .bb-stat .num {
+            color: #4f8cf7;
+            font-weight: 600;
+        }
+        .bottom-bar .bb-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .bottom-bar .bb-btn {
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.12s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            min-height: 32px;
+        }
+        .bottom-bar .bb-btn:hover {
+            border-color: #4f8cf7;
+            color: #4f8cf7;
+            background: #f0f7ff;
+        }
+        .bottom-bar .bb-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+        .bottom-bar .bb-status {
+            font-size: 11px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .bottom-bar .bb-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .bottom-bar .bb-status .dot.green {
+            background: #22c55e;
+        }
+        .bottom-bar .bb-status .dot.gray {
+            background: #cbd5e1;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 500px) {
+            .app {
+                padding: 12px 16px 0;
+            }
+            .bottom-bar {
+                margin: 0 -16px;
+                padding: 10px 16px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .bottom-bar .bb-left {
+                justify-content: center;
+            }
+            .bottom-bar .bb-right {
+                justify-content: center;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-btn span {
+                display: none;
+            }
+            .nav-btn {
+                padding: 8px 12px;
+            }
+            .card {
+                padding: 16px 18px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 10px 14px;
+                min-height: 40px;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.001s !important;
+                transition-duration: 0.001s !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon">σ</div>
+                <div class="brand-name">Stat<span>Lab</span></div>
+            </div>
+            <span class="header-version">@tanwiraasif</span>
+        </header>
+
+        <!-- TOP NAVIGATION -->
+        <nav class="top-nav" id="mainNav">
+            <button class="nav-btn active" data-tab="tab-desc">
+                <svg viewBox="0 0 24 24"><rect x="4" y="12" width="3" height="8" rx="1"/><rect x="10.5" y="7" width="3" height="13" rx="1"/><rect x="17" y="3" width="3" height="17" rx="1"/></svg>
+                <span>Describe</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-dist">
+                <svg viewBox="0 0 24 24"><path d="M2 18c3 0 4-12 7-12s2 9 3 9 0-7 3-7 4 10 7 10"/></svg>
+                <span>Distrib.</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-tests">
+                <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+                <span>Tests</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-reg">
+                <svg viewBox="0 0 24 24"><circle cx="5.5" cy="17" r="1.5" fill="currentColor" stroke="none"/><circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="13" r="1.5" fill="currentColor" stroke="none"/><circle cx="20" cy="5" r="1.5" fill="currentColor" stroke="none"/><path d="M3 20L21 4"/></svg>
+                <span>Regression</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-ci">
+                <svg viewBox="0 0 24 24"><path d="M8 4H6v16h2M16 4h2v16h-2M6 12h12"/></svg>
+                <span>CI</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-charts">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v9l7 4"/></svg>
+                <span>Charts</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-trading">
+                <svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>
+                <span>Trading</span>
+            </button>
+            <button class="nav-btn" data-tab="tab-tools">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                <span>Tools</span>
+            </button>
+        </nav>
+
+        <!-- PANELS -->
+        <div class="app-content">
+            <!-- DESCRIPTIVE -->
+            <section class="panel active" id="tab-desc">
+                <div class="card">
+                    <div class="card-label">📊 dataset</div>
+                    <textarea id="descInput" rows="4" placeholder="12, 15, 11, 18, 14, 20, 9, 16, 22, 13"></textarea>
+                    <div class="btn-row">
+                        <button class="btn btn-primary" id="descCalcBtn">Analyze</button>
+                        <button class="btn btn-ghost" id="descClearBtn">Clear</button>
+                    </div>
+                    <p class="err" id="descError"></p>
+                </div>
+                <div id="descChips" class="chip-row" hidden></div>
+                <div class="stat-grid" id="descGrid" hidden></div>
+                <div class="card" id="descChartCard" hidden>
+                    <div class="card-label">📈 distribution</div>
+                    <div class="chart-wrap"><canvas class="chart" id="descHistCanvas"></canvas></div>
+                </div>
+            </section>
+
+            <!-- DISTRIBUTIONS -->
+            <section class="panel" id="tab-dist">
+                <div class="seg" id="distTypeSeg">
+                    <button class="seg-btn active" data-dist="normal">Normal</button>
+                    <button class="seg-btn" data-dist="binomial">Binomial</button>
+                    <button class="seg-btn" data-dist="poisson">Poisson</button>
+                    <button class="seg-btn" data-dist="t">t-dist</button>
+                    <button class="seg-btn" data-dist="chisq">χ²</button>
+                </div>
+                <div class="card" id="distInputs"></div>
+                <p class="err" id="distError"></p>
+                <div class="stat-grid" id="distGrid" hidden></div>
+                <div class="card" id="distChartCard" hidden>
+                    <div class="card-label">📉 visualization</div>
+                    <div class="chart-wrap"><canvas class="chart" id="distCanvas"></canvas></div>
+                </div>
+            </section>
+
+            <!-- TESTS -->
+            <section class="panel" id="tab-tests">
+                <div class="seg" id="testTypeSeg">
+                    <button class="seg-btn active" data-test="one-t">1-Sample t</button>
+                    <button class="seg-btn" data-test="two-t">2-Sample t</button>
+                    <button class="seg-btn" data-test="paired-t">Paired t</button>
+                    <button class="seg-btn" data-test="z">Z-test</button>
+                    <button class="seg-btn" data-test="chisq-gof">χ² fit</button>
+                </div>
+                <div class="seg" id="alphaSeg" style="margin-bottom:12px;">
+                    <button class="seg-btn" data-alpha="0.10">α=0.10</button>
+                    <button class="seg-btn active" data-alpha="0.05">α=0.05</button>
+                    <button class="seg-btn" data-alpha="0.01">α=0.01</button>
+                </div>
+                <div class="card" id="testInputs"></div>
+                <p class="err" id="testError"></p>
+                <div class="stat-grid" id="testGrid" hidden></div>
+                <div class="verdict" id="testConclusion" hidden></div>
+            </section>
+
+            <!-- REGRESSION -->
+            <section class="panel" id="tab-reg">
+                <div class="card">
+                    <div class="card-label">📈 paired data (x, y)</div>
+                    <textarea id="regInput" rows="6" placeholder="1, 2.3&#10;2, 4.1&#10;3, 5.8&#10;4, 8.0&#10;5, 9.6"></textarea>
+                    <div class="btn-row">
+                        <button class="btn btn-primary" id="regCalcBtn">Fit line</button>
+                        <button class="btn btn-ghost" id="regClearBtn">Clear</button>
+                    </div>
+                    <p class="err" id="regError"></p>
+                </div>
+                <div class="stat-grid" id="regGrid" hidden></div>
+                <div class="card" id="regChartCard" hidden>
+                    <div class="card-label">📊 scatter + fit</div>
+                    <div class="chart-wrap"><canvas class="chart" id="regCanvas"></canvas></div>
+                </div>
+                <div class="card" id="regPredictCard" hidden>
+                    <div class="card-label">🔮 prediction</div>
+                    <div class="predict-row">
+                        <span style="font-size:13px;color:#64748b;">x =</span>
+                        <input type="number" id="regPredictX" placeholder="6">
+                        <div class="predict-val" id="regPredictResult">—</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CI -->
+            <section class="panel" id="tab-ci">
+                <div class="seg" id="ciTypeSeg">
+                    <button class="seg-btn active" data-ci="mean">Mean</button>
+                    <button class="seg-btn" data-ci="prop">Proportion</button>
+                </div>
+                <div class="seg" id="ciLevelSeg">
+                    <button class="seg-btn" data-level="0.90">90%</button>
+                    <button class="seg-btn active" data-level="0.95">95%</button>
+                    <button class="seg-btn" data-level="0.99">99%</button>
+                </div>
+                <div class="card" id="ciInputs"></div>
+                <p class="err" id="ciError"></p>
+                <div class="stat-grid" id="ciGrid" hidden></div>
+            </section>
+
+            <!-- CHARTS -->
+            <section class="panel" id="tab-charts">
+                <div class="card">
+                    <div class="card-label">🎨 chart type</div>
+                    <div class="seg" id="chartTypeSeg">
+                        <button class="seg-btn active" data-ct="bar">Bar</button>
+                        <button class="seg-btn" data-ct="line">Line</button>
+                        <button class="seg-btn" data-ct="pie">Pie</button>
+                        <button class="seg-btn" data-ct="hist">Hist.</button>
+                        <button class="seg-btn" data-ct="scatter">Scatter</button>
+                        <button class="seg-btn" data-ct="box">Box</button>
+                        <button class="seg-btn" data-ct="heatmap">Heat</button>
+                        <button class="seg-btn" data-ct="candle">Candle</button>
+                    </div>
+                    <div class="field">
+                        <label class="field-label">data</label>
+                        <textarea id="chartX" rows="3" placeholder="12, 18, 7, 24, 15, 9, 21"></textarea>
+                    </div>
+                    <div class="field" id="chartYField" hidden>
+                        <label class="field-label">Y (scatter)</label>
+                        <textarea id="chartY" rows="2" placeholder="2.1, 3.4, 1.2, 4.8"></textarea>
+                    </div>
+                    <div class="field" id="chartOhlcField" hidden>
+                        <label class="field-label">OHLC rows</label>
+                        <textarea id="chartOhlc" rows="3" placeholder="100,105,98,102"></textarea>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn btn-primary" id="chartDrawBtn">Draw</button>
+                        <button class="btn btn-ghost" id="chartClearBtn">Clear</button>
+                    </div>
+                    <p class="err" id="chartError"></p>
+                </div>
+                <div class="card" id="chartCard" hidden>
+                    <div class="card-label" id="chartCardLabel">chart</div>
+                    <div class="chart-wrap" style="height:220px;"><canvas class="chart" id="chartCanvas" style="height:220px;"></canvas></div>
+                    <div class="export-row">
+                        <button class="export-btn" id="chartExportPng">PNG</button>
+                        <button class="export-btn" id="chartExportCsv">CSV</button>
+                        <button class="export-btn" id="chartExportJson">JSON</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRADING -->
+            <section class="panel" id="tab-trading">
+                <div class="card">
+                    <div class="card-label">📉 price series</div>
+                    <textarea id="tdPrices" rows="4" placeholder="100, 102, 101, 105, 107, 106, 110, 112, 109, 115"></textarea>
+                    <div class="two-col" style="margin-top:6px;">
+                        <div class="field"><label class="field-label">window</label><input type="number" id="tdWindow" value="5"></div>
+                        <div class="field"><label class="field-label">risk-free %</label><input type="number" id="tdRf" value="2" step="0.1"></div>
+                    </div>
+                    <div class="btn-row">
+                        <button class="btn btn-primary" id="tdCalcBtn">Analyze</button>
+                        <button class="btn btn-ghost" id="tdClearBtn">Clear</button>
+                    </div>
+                    <p class="err" id="tdError"></p>
+                </div>
+                <div class="stat-grid" id="tdGrid" hidden></div>
+                <div class="card" id="tdChartCard" hidden>
+                    <div class="card-label">📈 price · SMA · bands</div>
+                    <div class="chart-wrap" style="height:220px;"><canvas class="chart" id="tdCanvas" style="height:220px;"></canvas></div>
+                    <div class="export-row">
+                        <button class="export-btn" id="tdExportPng">PNG</button>
+                        <button class="export-btn" id="tdExportCsv">CSV</button>
+                        <button class="export-btn" id="tdExportJson">JSON</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOOLS -->
+            <section class="panel" id="tab-tools">
+                <div class="seg" id="toolTypeSeg">
+                    <button class="seg-btn active" data-tool="ss">Sample Size</button>
+                    <button class="seg-btn" data-tool="norm-test">Normality</button>
+                    <button class="seg-btn" data-tool="zconv">Z-score</button>
+                    <button class="seg-btn" data-tool="bayes">Bayes</button>
+                    <button class="seg-btn" data-tool="effect">Effect</button>
+                </div>
+                <!-- SS -->
+                <div id="tool-ss">
+                    <div class="tool-badge">📐 sample size</div>
+                    <div class="card">
+                        <div class="seg" id="ssPurposeSeg">
+                            <button class="seg-btn active" data-p="mean">Mean</button>
+                            <button class="seg-btn" data-p="prop">Proportion</button>
+                        </div>
+                        <div id="ssFields">
+                            <div class="two-col">
+                                <div class="field"><label class="field-label">Margin E</label><input type="number" id="ssE" value="5"></div>
+                                <div class="field"><label class="field-label">σ / p̂</label><input type="number" id="ssSigma" value="15"></div>
+                            </div>
+                            <div class="seg" id="ssConfSeg">
+                                <button class="seg-btn" data-c="0.90">90%</button>
+                                <button class="seg-btn active" data-c="0.95">95%</button>
+                                <button class="seg-btn" data-c="0.99">99%</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="ssCalcBtn" style="width:100%;">Calculate</button>
+                        <p class="err" id="ssError"></p>
+                    </div>
+                    <div class="ss-result" id="ssResult" hidden><div class="ss-n" id="ssN">—</div><div class="ss-label">minimum sample size</div></div>
+                </div>
+                <!-- Normality -->
+                <div id="tool-norm-test" hidden>
+                    <div class="tool-badge">📊 normality</div>
+                    <div class="card">
+                        <textarea id="ntData" rows="4" placeholder="23, 25, 24, 26, 22, 27, 24, 25"></textarea>
+                        <div class="btn-row"><button class="btn btn-primary" id="ntCalcBtn">Test</button><button class="btn btn-ghost" id="ntClearBtn">Clear</button></div>
+                        <p class="err" id="ntError"></p>
+                    </div>
+                    <div class="stat-grid" id="ntGrid" hidden></div>
+                    <div class="card" id="ntChartCard" hidden><div class="chart-wrap"><canvas class="chart" id="ntCanvas"></canvas></div></div>
+                </div>
+                <!-- Z-score -->
+                <div id="tool-zconv" hidden>
+                    <div class="tool-badge">🔀 z-score</div>
+                    <div class="card">
+                        <div class="two-col">
+                            <div class="field"><label class="field-label">μ</label><input type="number" id="zcMu" value="100"></div>
+                            <div class="field"><label class="field-label">σ</label><input type="number" id="zcSd" value="15"></div>
+                        </div>
+                        <div class="field"><label class="field-label">X</label><input type="number" id="zcX" value="115"></div>
+                        <button class="btn btn-primary" id="zcCalcBtn" style="width:100%;">Convert</button>
+                        <p class="err" id="zcError"></p>
+                        <div class="verdict" id="zcOutput" hidden></div>
+                    </div>
+                </div>
+                <!-- Bayes -->
+                <div id="tool-bayes" hidden>
+                    <div class="tool-badge">🔵 bayes</div>
+                    <div class="card">
+                        <div class="field"><label class="field-label">P(A)</label><input type="number" id="bayesA" value="0.01" step="0.01"></div>
+                        <div class="field"><label class="field-label">P(B|A)</label><input type="number" id="bayesBgA" value="0.95" step="0.01"></div>
+                        <div class="field"><label class="field-label">P(B|¬A)</label><input type="number" id="bayesBgnA" value="0.05" step="0.01"></div>
+                        <button class="btn btn-primary" id="bayesCalcBtn" style="width:100%;">Calculate P(A|B)</button>
+                        <p class="err" id="bayesError"></p>
+                    </div>
+                    <div class="stat-grid" id="bayesGrid" hidden></div>
+                </div>
+                <!-- Effect -->
+                <div id="tool-effect" hidden>
+                    <div class="tool-badge">📏 effect size</div>
+                    <div class="card">
+                        <div class="seg" id="effectModeSeg">
+                            <button class="seg-btn active" data-m="twosample">Two samples</button>
+                            <button class="seg-btn" data-m="onesample">vs μ₀</button>
+                        </div>
+                        <div id="effectFields"></div>
+                        <button class="btn btn-primary" id="effectCalcBtn" style="width:100%;">Calculate</button>
+                        <p class="err" id="effectError"></p>
+                    </div>
+                    <div class="stat-grid" id="effectGrid" hidden></div>
+                    <div class="verdict" id="effectVerdict" hidden></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ========== BOTTOM BAR ========== -->
+        <div class="bottom-bar" id="bottomBar">
+            <div class="bb-left">
+                <div class="bb-status">
+                    <span class="dot gray" id="statusDot"></span>
+                    <span id="statusText">Ready</span>
+                </div>
+                <div class="bb-stat" id="bbStatN" style="display:none;">
+                    n = <b class="num" id="bbN">—</b>
+                </div>
+                <div class="bb-stat" id="bbStatMean" style="display:none;">
+                    μ = <b class="num" id="bbMean">—</b>
+                </div>
+                <div class="bb-stat" id="bbStatSD" style="display:none;">
+                    σ = <b class="num" id="bbSD">—</b>
+                </div>
+            </div>
+            <div class="bb-right">
+                <button class="bb-btn" id="bbClearAll">
+                    <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                    Clear
+                </button>
+                <button class="bb-btn" id="bbExportCSV">
+                    <svg viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><polyline points="8 12 12 16 16 12"/><line x1="12" y1="2" x2="12" y2="16"/></svg>
+                    Export
+                </button>
+                <button class="bb-btn" id="bbAbout">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/><line x1="12" y1="11" x2="12" y2="17"/></svg>
+                    About
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        'use strict';
+        // ====== FULL STATLAB LOGIC ======
+        // All math functions, UI interactions, event handlers remain identical.
+        // ================================================================
+
+        // [MATH LIBRARY]
+        function gammaln(x) {
+            const g = 7,
+                c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+                    771.32342877765313, -176.61502916214059, 12.507343278686905,
+                    -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+                ];
+            if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - gammaln(1 - x);
+            x -= 1;
+            let a = c[0];
+            const t = x + g + 0.5;
+            for (let i = 1; i < g + 2; i++) a += c[i] / (x + i);
+            return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+        }
+
+        function logChoose(n, k) {
+            if (k < 0 || k > n) return -Infinity;
+            return gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1);
+        }
+
+        function erf(x) {
+            const s = x < 0 ? -1 : 1;
+            x = Math.abs(x);
+            const a1 = 0.254829592,
+                a2 = -0.284496736,
+                a3 = 1.421413741,
+                a4 = -1.453152027,
+                a5 = 1.061405429,
+                p = 0.3275911;
+            const t = 1 / (1 + p * x);
+            return s * (1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t) * Math.exp(-x * x));
+        }
+
+        function normalPDF(x, m = 0, s = 1) { return Math.exp(-((x - m) ** 2) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI)); }
+
+        function normalCDF(x, m = 0, s = 1) { return 0.5 * (1 + erf((x - m) / (s * Math.sqrt(2)))); }
+
+        function normalInverse(p) {
+            if (p <= 0) return -Infinity;
+            if (p >= 1) return Infinity;
+            const a = [-3.969683028665376e+01, 2.209460984245205e+02, -2.759285104469687e+02, 1.383577518672690e+02,
+                -3.066479806614716e+01, 2.506628277459239e+00
+            ];
+            const b = [-5.447609879822406e+01, 1.615858368580409e+02, -1.556989798598866e+02, 6.680131188771972e+01,
+                -1.328068155288572e+01
+            ];
+            const c = [-7.784894002430293e-03, -3.223964580411365e-01, -2.400758277161838e+00, -2.549732539343734e+00,
+                4.374664141464968e+00, 2.938163982698783e+00
+            ];
+            const d = [7.784695709041462e-03, 3.224671290700398e-01, 2.445134137142996e+00, 3.754408661907416e+00];
+            const plow = 0.02425,
+                phigh = 1 - plow;
+            let q, r;
+            if (p < plow) { q = Math.sqrt(-2 * Math.log(p)); return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) *
+                    q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1); } else if (p <= phigh) { q = p - 0.5;
+                r = q * q; return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[
+                    1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1); } else { q = Math.sqrt(-2 * Math.log(1 - p)); return -(((((
+                        c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) *
+                    q + d[3]) * q + 1); }
+        }
+
+        function betacf(x, a, b) {
+            const MAXIT = 200,
+                EPS = 3e-9,
+                FPMIN = 1e-30;
+            const qab = a + b,
+                qap = a + 1,
+                qam = a - 1;
+            let c = 1,
+                d = 1 - qab * x / qap;
+            if (Math.abs(d) < FPMIN) d = FPMIN;
+            d = 1 / d;
+            let h = d;
+            for (let m = 1; m <= MAXIT; m++) {
+                const m2 = 2 * m;
+                let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+                d = 1 + aa * d;
+                if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c;
+                if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d;
+                h *= d * c;
+                aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+                d = 1 + aa * d;
+                if (Math.abs(d) < FPMIN) d = FPMIN;
+                c = 1 + aa / c;
+                if (Math.abs(c) < FPMIN) c = FPMIN;
+                d = 1 / d;
+                const del = d * c;
+                h *= del;
+                if (Math.abs(del - 1) < EPS) break;
+            }
+            return h;
+        }
+
+        function betai(a, b, x) {
+            if (x <= 0) return 0;
+            if (x >= 1) return 1;
+            const bt = Math.exp(gammaln(a + b) - gammaln(a) - gammaln(b) + a * Math.log(x) + b * Math.log(1 - x));
+            return x < (a + 1) / (a + b + 2) ? bt * betacf(x, a, b) / a : 1 - bt * betacf(1 - x, b, a) / b;
+        }
+
+        function tCDF(t, df) {
+            const x = df / (df + t * t),
+                p = betai(df / 2, 0.5, x) / 2;
+            return t > 0 ? 1 - p : p;
+        }
+
+        function gammainc(x, a) {
+            if (x <= 0) return 0;
+            if (x < a + 1) {
+                let sum = 1 / a,
+                    term = sum,
+                    n = a;
+                for (let i = 0; i < 300; i++) { n += 1;
+                    term *= x / n;
+                    sum += term; if (Math.abs(term) < Math.abs(sum) * 1e-13) break; }
+                return sum * Math.exp(-x + a * Math.log(x) - gammaln(a));
+            } else {
+                let b = x + 1 - a,
+                    c = 1e300,
+                    d = 1 / b,
+                    h = d;
+                for (let i = 1; i < 300; i++) {
+                    const an = -i * (i - a);
+                    b += 2;
+                    d = an * d + b;
+                    if (Math.abs(d) < 1e-300) d = 1e-300;
+                    c = b + an / c;
+                    if (Math.abs(c) < 1e-300) c = 1e-300;
+                    d = 1 / d;
+                    const del = d * c;
+                    h *= del;
+                    if (Math.abs(del - 1) < 1e-13) break;
+                }
+                return 1 - Math.exp(-x + a * Math.log(x) - gammaln(a)) * h;
+            }
+        }
+
+        function chiSqCDF(x, df) { if (x <= 0) return 0; return gammainc(x / 2, df / 2); }
+
+        function bisectInv(fn, p, lo, hi, iters = 80) { for (let i = 0; i < iters; i++) { const m = (lo + hi) / 2;
+                fn(m) < p ? lo = m : hi = m; } return (lo + hi) / 2; }
+
+        function tInv(p, df) { return bisectInv(x => tCDF(x, df), p, -200, 200); }
+
+        function chiSqInv(p, df) { return bisectInv(x => chiSqCDF(x, df), p, 0, Math.max(1000, df * 25 + 50)); }
+
+        function binomialPMF(k, n, p) { if (k < 0 || k > n) return 0; if (p <= 0) return k === 0 ? 1 : 0; if (p >= 1) return k ===
+                n ? 1 : 0; return Math.exp(logChoose(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p)); }
+
+        function binomialCDF(k, n, p) { if (k < 0) return 0; if (k >= n) return 1; let s = 0; for (let i = 0; i <= k; i++) s +=
+                binomialPMF(i, n, p); return Math.min(1, s); }
+
+        function poissonPMF(k, lam) { if (k < 0) return 0; if (lam <= 0) return k === 0 ? 1 : 0; return Math.exp(-lam + k *
+                Math.log(lam) - gammaln(k + 1)); }
+
+        function poissonCDF(k, lam) { if (k < 0) return 0; let s = 0; for (let i = 0; i <= k; i++) s += poissonPMF(i, lam); return Math
+                .min(1, s); }
+
+        function parseNums(str) { if (!str) return []; return str.split(/[\s,;]+/).map(s => s.trim()).filter(s => s.length)
+                .map(Number).filter(n => !Number.isNaN(n)); }
+
+        function mean(a) { return a.reduce((s, v) => s + v, 0) / a.length; }
+
+        function variance(a, sample = true) { const m = mean(a),
+                ss = a.reduce((s, v) => s + (v - m) ** 2, 0); return ss / (a.length - (sample ? 1 : 0)); }
+
+        function sd(a, sample = true) { return Math.sqrt(variance(a, sample)); }
+
+        function median(a) { const s = [...a].sort((x, y) => x - y),
+                n = s.length,
+                mid = Math.floor(n / 2); return n % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2; }
+
+        function pctile(s, p) { const n = s.length,
+                idx = (p / 100) * (n - 1),
+                lo = Math.floor(idx),
+                hi = Math.ceil(idx); return lo === hi ? s[lo] : s[lo] + (s[hi] - s[lo]) * (idx - lo); }
+
+        function modeOf(a) { const c = new Map();
+            let mx = 0;
+            a.forEach(v => { const n = (c.get(v) || 0) + 1;
+                c.set(v, n); if (n > mx) mx = n; }); if (mx <= 1) return null; return [...c.entries()].filter(([, n]) => n ===
+                    mx).map(([v]) => v).sort((a, b) => a - b); }
+
+        function skewness(a) { const n = a.length,
+                m = mean(a),
+                s = sd(a, false); if (s === 0) return 0; const s3 = a.reduce((t, v) => t + ((v - m) / s) ** 3, 0); return (n / ((n -
+                    1) * (n - 2))) * s3; }
+
+        function kurtosis(a) { const n = a.length,
+                m = mean(a),
+                s = sd(a, false); if (s === 0) return 0; return a.reduce((t, v) => t + ((v - m) / s) ** 4, 0) / n - 3; }
+
+        function computeDesc(a) {
+            const s = [...a].sort((x, y) => x - y),
+                n = a.length,
+                m = mean(a),
+                sv = n > 1 ? variance(a, true) : 0,
+                pv = variance(a, false);
+            const q1 = pctile(s, 25),
+                q2 = pctile(s, 50),
+                q3 = pctile(s, 75);
+            return {
+                n,
+                sum: a.reduce((t, v) => t + v, 0),
+                mean: m,
+                median: median(a),
+                mode: modeOf(a),
+                sampleVar: sv,
+                sampleSD: Math.sqrt(sv),
+                popVar: pv,
+                popSD: Math.sqrt(pv),
+                min: s[0],
+                max: s[n - 1],
+                range: s[n - 1] - s[0],
+                q1,
+                q2,
+                q3,
+                iqr: q3 - q1,
+                skew: n > 2 ? skewness(a) : null,
+                kurt: n > 3 ? kurtosis(a) : null,
+                sem: n > 1 ? Math.sqrt(sv / n) : null,
+                cv: m !== 0 ? (Math.sqrt(sv) / Math.abs(m)) * 100 : null,
+                sum2: a.reduce((t, v) => t + v * v, 0)
+            };
+        }
+
+        function fmt(x, d = 4) { if (x === null || x === undefined || Number.isNaN(x)) return '—'; if (!isFinite(x)) return x > 0 ?
+                '∞' : '-∞'; let v = Number(x.toFixed(d)); if (Object.is(v, -0)) v = 0; return v.toString(); }
+
+        function fmtP(p) { if (p === null || Number.isNaN(p)) return '—'; if (p < 0.0001) return '< 0.0001'; return fmt(p, 4); }
+
+        function tile(label, value, { wide = false, hi = false, cyan = false, sm = false } = {}) {
+            const cls = ['stat-cell', wide ? 'wide' : '', sm ? '' : ''].filter(Boolean).join(' ');
+            const valCls = ['s-val', hi ? 'hi' : '', cyan ? 'cyan' : '', sm ? 'sm' : ''].filter(Boolean).join(' ').trim();
+            return `<div class="${cls}"><div class="s-label">${label}</div><div class="${valCls}">${value}</div></div>`;
+        }
+
+        const CV = '#4f8cf7',
+            CA = '#6c5ce7',
+            CY = '#6c5ce7';
+
+        function setupCanvas(canvas) {
+            const dpr = window.devicePixelRatio || 1,
+                w = canvas.parentElement.clientWidth || 320,
+                h = 170;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, w, h);
+            return { ctx, w, h };
+        }
+
+        function axes(ctx, w, h, p) {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.l, p.t);
+            ctx.lineTo(p.l, h - p.b);
+            ctx.lineTo(w - p.r, h - p.b);
+            ctx.stroke();
+        }
+
+        function drawHistogram(canvas, data, bins = 10) {
+            const { ctx, w, h } = setupCanvas(canvas);
+            const p = { l: 32, r: 8, t: 10, b: 22 };
+            const mn = Math.min(...data),
+                mx = Math.max(...data),
+                rng = mx - mn || 1,
+                bw = rng / bins;
+            const counts = new Array(bins).fill(0);
+            data.forEach(v => { let i = Math.floor((v - mn) / bw); if (i >= bins) i = bins - 1; if (i < 0) i = 0;
+                counts[i]++; });
+            const maxC = Math.max(...counts, 1);
+            axes(ctx, w, h, p);
+            const pw = w - p.l - p.r,
+                ph = h - p.t - p.b;
+            counts.forEach((c, i) => {
+                const bh = (c / maxC) * ph,
+                    bx = p.l + i * (pw / bins) + 1.5,
+                    by = h - p.b - bh;
+                const g = ctx.createLinearGradient(0, by, 0, h - p.b);
+                g.addColorStop(0, CV + 'cc');
+                g.addColorStop(1, CY + '55');
+                ctx.fillStyle = g;
+                ctx.globalAlpha = 0.9;
+                ctx.beginPath();
+                ctx.roundRect(bx, by, Math.max(pw / bins - 3, 1), bh, 3);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '10px JetBrains Mono,monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(fmt(mn, 1), p.l, h - 5);
+            ctx.textAlign = 'right';
+            ctx.fillText(fmt(mx, 1), w - p.r, h - 5);
+            ctx.textAlign = 'left';
+            ctx.fillText(maxC, 2, p.t + 8);
+        }
+
+        function drawNormalCurve(canvas, mu, s, shadeLo, shadeHi) {
+            const { ctx, w, h } = setupCanvas(canvas);
+            const p = { l: 8, r: 8, t: 14, b: 22 };
+            const xMn = mu - 4 * s,
+                xMx = mu + 4 * s,
+                pw = w - p.l - p.r,
+                ph = h - p.t - p.b;
+            const toX = x => p.l + ((x - xMn) / (xMx - xMn)) * pw;
+            const peak = normalPDF(mu, mu, s);
+            const toY = y => p.t + ph - (y / peak) * ph * 0.9;
+            if (shadeLo !== null || shadeHi !== null) {
+                const lo = shadeLo === null ? xMn : Math.max(xMn, shadeLo);
+                const hi = shadeHi === null ? xMx : Math.min(xMx, shadeHi);
+                ctx.beginPath();
+                ctx.moveTo(toX(lo), toY(0));
+                for (let x = lo; x <= hi; x += (hi - lo) / 80) ctx.lineTo(toX(x), toY(normalPDF(x, mu, s)));
+                ctx.lineTo(toX(hi), toY(0));
+                ctx.closePath();
+                const g = ctx.createLinearGradient(0, 0, 0, h);
+                g.addColorStop(0, CA + '55');
+                g.addColorStop(1, CA + '11');
+                ctx.fillStyle = g;
+                ctx.fill();
+            }
+            ctx.beginPath();
+            for (let i = 0; i <= 150; i++) { const x = xMn + (xMx - xMn) * (i / 150),
+                    px = toX(x),
+                    py = toY(normalPDF(x, mu, s));
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py); }
+            const lg = ctx.createLinearGradient(0, 0, w, 0);
+            lg.addColorStop(0, CV);
+            lg.addColorStop(1, CY);
+            ctx.strokeStyle = lg;
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p.l, h - p.b);
+            ctx.lineTo(w - p.r, h - p.b);
+            ctx.stroke();
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '9.5px JetBrains Mono,monospace';
+            ctx.textAlign = 'center';
+            for (let k = -3; k <= 3; k++) ctx.fillText(fmt(mu + k * s, 1), toX(mu + k * s), h - 5);
+        }
+
+        function drawBarPMF(canvas, pmfFn, kMax, hLo, hHi) {
+            const { ctx, w, h } = setupCanvas(canvas);
+            const p = { l: 26, r: 8, t: 10, b: 22 };
+            const pw = w - p.l - p.r,
+                ph = h - p.t - p.b,
+                n = kMax + 1;
+            const vals = [];
+            let maxV = 0;
+            for (let k = 0; k <= kMax; k++) { const v = pmfFn(k);
+                vals.push(v); if (v > maxV) maxV = v; }
+            axes(ctx, w, h, p);
+            const gap = n > 40 ? 0 : 2;
+            for (let k = 0; k <= kMax; k++) {
+                const v = vals[k],
+                    bh = (v / maxV) * ph,
+                    bx = p.l + k * (pw / n) + gap / 2,
+                    by = h - p.b - bh;
+                const inR = k >= hLo && k <= hHi;
+                ctx.fillStyle = inR ? CA : CV;
+                ctx.globalAlpha = inR ? 0.95 : 0.4;
+                ctx.fillRect(bx, by, Math.max(pw / n - gap, 0.8), bh);
+            }
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '9.5px JetBrains Mono,monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText('0', p.l, h - 5);
+            ctx.textAlign = 'right';
+            ctx.fillText(kMax, w - p.r, h - 5);
+        }
+
+        function drawScatter(canvas, xs, ys, slope, intercept) {
+            const { ctx, w, h } = setupCanvas(canvas);
+            const p = { l: 32, r: 12, t: 12, b: 24 };
+            const pw = w - p.l - p.r,
+                ph = h - p.t - p.b;
+            const xMn = Math.min(...xs),
+                xMx = Math.max(...xs);
+            const yMn = Math.min(...ys, ...xs.map(x => slope * x + intercept));
+            const yMx = Math.max(...ys, ...xs.map(x => slope * x + intercept));
+            const xp = (xMx - xMn || 1) * 0.08,
+                yp = (yMx - yMn || 1) * 0.12;
+            const x0 = xMn - xp,
+                x1 = xMx + xp,
+                y0 = yMn - yp,
+                y1 = yMx + yp;
+            const toX = x => p.l + ((x - x0) / (x1 - x0)) * pw,
+                toY = y => p.t + ph - ((y - y0) / (y1 - y0)) * ph;
+            axes(ctx, w, h, p);
+            const lg = ctx.createLinearGradient(toX(x0), 0, toX(x1), 0);
+            lg.addColorStop(0, CA + '99');
+            lg.addColorStop(1, CA + 'cc');
+            ctx.strokeStyle = lg;
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 3]);
+            ctx.beginPath();
+            ctx.moveTo(toX(x0), toY(slope * x0 + intercept));
+            ctx.lineTo(toX(x1), toY(slope * x1 + intercept));
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = CY;
+            xs.forEach((x, i) => { ctx.beginPath();
+                ctx.arc(toX(x), toY(ys[i]), 3.8, 0, Math.PI * 2);
+                ctx.fill(); });
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '9.5px JetBrains Mono,monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText(fmt(x0, 1), p.l, h - 5);
+            ctx.textAlign = 'right';
+            ctx.fillText(fmt(x1, 1), w - p.r, h - 5);
+        }
+
+        function drawQQ(canvas, data) {
+            const { ctx, w, h } = setupCanvas(canvas);
+            const p = { l: 32, r: 14, t: 14, b: 24 };
+            const pw = w - p.l - p.r,
+                ph = h - p.t - p.b,
+                n = data.length;
+            const sorted = [...data].sort((a, b) => a - b);
+            const m = mean(data),
+                s = sd(data, true);
+            const pts = sorted.map((v, i) => ({ x: normalInverse((i + 0.5) / n), y: (v - m) / s }));
+            const xs = pts.map(p => p.x),
+                ys = pts.map(p => p.y);
+            const xMn = Math.min(...xs) - 0.3,
+                xMx = Math.max(...xs) + 0.3;
+            const yMn = Math.min(...ys) - 0.3,
+                yMx = Math.max(...ys) + 0.3;
+            const toX = x => p.l + ((x - xMn) / (xMx - xMn)) * pw;
+            const toY = y => p.t + ph - ((y - yMn) / (yMx - yMn)) * ph;
+            axes(ctx, w, h, p);
+            const ref = Math.max(Math.abs(xMn), Math.abs(xMx));
+            ctx.strokeStyle = CA + '66';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(toX(-ref), toY(-ref));
+            ctx.lineTo(toX(ref), toY(ref));
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = CV + 'cc';
+            pts.forEach(({ x, y }) => { ctx.beginPath();
+                ctx.arc(toX(x), toY(y), 3, 0, Math.PI * 2);
+                ctx.fill(); });
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '9.5px JetBrains Mono,monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('Theoretical Quantiles', p.l + pw / 2, h - 4);
+        }
+
+        // ---- TAB NAV ----
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const panelSections = document.querySelectorAll('.panel');
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                navBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.dataset.tab;
+                panelSections.forEach(p => p.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+                updateBottomBar();
+            });
+        });
+
+        function initSeg(id, attr, cb) {
+            document.getElementById(id).addEventListener('click', e => {
+                const b = e.target.closest('.seg-btn');
+                if (!b) return;
+                [...e.currentTarget.children].forEach(c => c.classList.remove('active'));
+                b.classList.add('active');
+                cb(b.dataset[attr]);
+            });
+        }
+
+        function segVal(id, attr) { return document.querySelector(`#${id} .seg-btn.active`)?.dataset[attr]; }
+
+        // ---- BOTTOM BAR ----
+        let currentDataset = [];
+
+        function updateBottomBar() {
+            const dot = document.getElementById('statusDot');
+            const status = document.getElementById('statusText');
+            const nEl = document.getElementById('bbN');
+            const meanEl = document.getElementById('bbMean');
+            const sdEl = document.getElementById('bbSD');
+            const statN = document.getElementById('bbStatN');
+            const statMean = document.getElementById('bbStatMean');
+            const statSD = document.getElementById('bbStatSD');
+
+            if (currentDataset.length > 0) {
+                const d = currentDataset;
+                const m = mean(d);
+                const s = sd(d, true);
+                dot.className = 'dot green';
+                status.textContent = `${d.length} values loaded`;
+                nEl.textContent = d.length;
+                meanEl.textContent = fmt(m, 2);
+                sdEl.textContent = fmt(s, 2);
+                statN.style.display = 'flex';
+                statMean.style.display = 'flex';
+                statSD.style.display = 'flex';
+            } else {
+                dot.className = 'dot gray';
+                status.textContent = 'Ready';
+                statN.style.display = 'none';
+                statMean.style.display = 'none';
+                statSD.style.display = 'none';
+            }
+        }
+
+        document.getElementById('bbClearAll').addEventListener('click', function() {
+            // Clear all textareas and results across all tabs
+            document.querySelectorAll('textarea').forEach(el => el.value = '');
+            document.querySelectorAll('.stat-grid').forEach(el => el.hidden = true);
+            document.querySelectorAll('.verdict').forEach(el => el.hidden = true);
+            document.querySelectorAll('.chip-row').forEach(el => el.hidden = true);
+            document.querySelectorAll('.err').forEach(el => el.textContent = '');
+            document.querySelectorAll('#descChartCard, #distChartCard, #regChartCard, #regPredictCard, #chartCard, #tdChartCard, #ntChartCard')
+                .forEach(el => { if (el) el.hidden = true; });
+            currentDataset = [];
+            updateBottomBar();
+        });
+
+        document.getElementById('bbExportCSV').addEventListener('click', function() {
+            if (currentDataset.length === 0) {
+                alert('No data to export. Run an analysis first.');
+                return;
+            }
+            const rows = [
+                ['value'],
+                ...currentDataset.map(v => [v])
+            ];
+            const csv = rows.map(r => r.join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'statlab-data.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        });
+
+        document.getElementById('bbAbout').addEventListener('click', function() {
+            alert(
+                'StatLab · Clean Statistics\n\n' +
+                'A comprehensive statistics toolkit with:\n' +
+                '• Descriptive statistics\n' +
+                '• Probability distributions\n' +
+                '• Hypothesis tests\n' +
+                '• Regression & correlation\n' +
+                '• Confidence intervals\n' +
+                '• Charts & visualization\n' +
+                '• Trading analytics\n' +
+                '• Sample size, normality, Bayes, effect size\n\n' +
+                'Built with ❤️ for data analysis.'
+            );
+        });
+
+        // ---- DESCRIPTIVE ----
+        (function() {
+            const inp = document.getElementById('descInput'),
+                err = document.getElementById('descError');
+            const grid = document.getElementById('descGrid'),
+                chips = document.getElementById('descChips');
+            const chartCard = document.getElementById('descChartCard');
+            document.getElementById('descCalcBtn').addEventListener('click', () => {
+                err.textContent = '';
+                grid.hidden = true;
+                chips.hidden = true;
+                chartCard.hidden = true;
+                const data = parseNums(inp.value);
+                if (!data.length) { err.textContent = 'Enter at least one numeric value.'; return; }
+                currentDataset = data;
+                updateBottomBar();
+                const r = computeDesc(data);
+                chips.innerHTML = `
+              <div class="chip">n = <b>${r.n}</b></div>
+              <div class="chip">Σ = <b>${fmt(r.sum,3)}</b></div>
+              <div class="chip">Σx² = <b>${fmt(r.sum2,2)}</b></div>
+              <div class="chip">Range = <b>${fmt(r.range,3)}</b></div>
+              <div class="chip">IQR = <b>${fmt(r.iqr,3)}</b></div>
+            `;
+                chips.hidden = false;
+                grid.innerHTML = [
+                    tile('Mean', fmt(r.mean), { hi: true, wide: true }),
+                    tile('Median', fmt(r.median), { cyan: true }),
+                    tile('Mode', r.mode ? r.mode.map(v => fmt(v, 3)).join(', ') : 'none', { sm: r.mode?.length > 2 }),
+                    tile('Sample SD', fmt(r.sampleSD), { hi: true }),
+                    tile('Sample Variance', fmt(r.sampleVar)),
+                    tile('Population SD', fmt(r.popSD)),
+                    tile('Population Var.', fmt(r.popVar)),
+                    tile('Min', fmt(r.min)),
+                    tile('Max', fmt(r.max)),
+                    tile('Q1', fmt(r.q1)),
+                    tile('Q3', fmt(r.q3)),
+                    tile('Std. Error of Mean', r.sem !== null ? fmt(r.sem) : '—'),
+                    tile('Coeff. of Variation', r.cv !== null ? fmt(r.cv, 2) + '%' : '—'),
+                    tile('Skewness', r.skew !== null ? fmt(r.skew) : 'needs n>2', { sm: r.skew === null }),
+                    tile('Excess Kurtosis', r.kurt !== null ? fmt(r.kurt) : 'needs n>3', { sm: r.kurt === null }),
+                ].join('');
+                grid.hidden = false;
+                if (data.length >= 4) {
+                    chartCard.hidden = false;
+                    drawHistogram(document.getElementById('descHistCanvas'), data, Math.min(14, Math.max(5, Math.round(Math
+                        .sqrt(data.length)))));
+                }
+            });
+            document.getElementById('descClearBtn').addEventListener('click', () => {
+                inp.value = '';
+                err.textContent = '';
+                grid.hidden = true;
+                chips.hidden = true;
+                chartCard.hidden = true;
+                currentDataset = [];
+                updateBottomBar();
+            });
+        })();
+
+        // ---- DISTRIBUTIONS ----
+        (function() {
+            const inputsEl = document.getElementById('distInputs'),
+                err = document.getElementById('distError');
+            const grid = document.getElementById('distGrid'),
+                chartCard = document.getElementById('distChartCard');
+            let curDist = 'normal';
+            const tmpl = {
+                normal: `
+              <div class="two-col">
+                <div class="field"><label class="field-label">Mean (μ)</label><input type="number" id="dNMu" value="0" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">Std dev (σ)</label><input type="number" id="dNSd" value="1" inputmode="decimal"></div>
+              </div>
+              <div class="seg" id="dNModeSeg">
+                <button class="seg-btn active" data-m="le">P(X ≤ x)</button>
+                <button class="seg-btn" data-m="ge">P(X ≥ x)</button>
+                <button class="seg-btn" data-m="btwn">P(a ≤ X ≤ b)</button>
+                <button class="seg-btn" data-m="inv">Find x</button>
+              </div>
+              <div id="dNFields"></div>
+              <button class="btn btn-primary" id="distCalcBtn" style="width:100%;margin-top:10px;">Calculate</button>
+            `,
+                binomial: `
+              <div class="two-col">
+                <div class="field"><label class="field-label">Trials (n)</label><input type="number" id="dBN" value="10" inputmode="numeric"></div>
+                <div class="field"><label class="field-label">Prob (p)</label><input type="number" id="dBP" value="0.5" step="0.01" inputmode="decimal"></div>
+              </div>
+              <div class="field"><label class="field-label">k (successes)</label><input type="number" id="dBK" value="5" inputmode="numeric"></div>
+              <div class="seg" id="dBModeSeg">
+                <button class="seg-btn active" data-m="eq">P(X = k)</button>
+                <button class="seg-btn" data-m="le">P(X ≤ k)</button>
+                <button class="seg-btn" data-m="ge">P(X ≥ k)</button>
+              </div>
+              <button class="btn btn-primary" id="distCalcBtn" style="width:100%;margin-top:6px;">Calculate</button>
+            `,
+                poisson: `
+              <div class="two-col">
+                <div class="field"><label class="field-label">Rate (λ)</label><input type="number" id="dPL" value="4" step="0.1" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">k (events)</label><input type="number" id="dPK" value="3" inputmode="numeric"></div>
+              </div>
+              <div class="seg" id="dPModeSeg">
+                <button class="seg-btn active" data-m="eq">P(X = k)</button>
+                <button class="seg-btn" data-m="le">P(X ≤ k)</button>
+                <button class="seg-btn" data-m="ge">P(X ≥ k)</button>
+              </div>
+              <button class="btn btn-primary" id="distCalcBtn" style="width:100%;margin-top:6px;">Calculate</button>
+            `,
+                t: `
+              <div class="field"><label class="field-label">Degrees of freedom</label><input type="number" id="dTDf" value="10" inputmode="numeric"></div>
+              <div class="seg" id="dTModeSeg">
+                <button class="seg-btn active" data-m="cdf">P(T ≤ t)</button>
+                <button class="seg-btn" data-m="crit">Critical t</button>
+              </div>
+              <div id="dTFields"></div>
+              <button class="btn btn-primary" id="distCalcBtn" style="width:100%;margin-top:10px;">Calculate</button>
+            `,
+                chisq: `
+              <div class="field"><label class="field-label">Degrees of freedom</label><input type="number" id="dCDf" value="5" inputmode="numeric"></div>
+              <div class="seg" id="dCModeSeg">
+                <button class="seg-btn active" data-m="cdf">P(χ² ≤ x)</button>
+                <button class="seg-btn" data-m="crit">Critical χ²</button>
+              </div>
+              <div id="dCFields"></div>
+              <button class="btn btn-primary" id="distCalcBtn" style="width:100%;margin-top:10px;">Calculate</button>
+            `
+            };
+
+            function normFields(m) {
+                const el = document.getElementById('dNFields');
+                if (m === 'btwn') el.innerHTML =
+                    `<div class="two-col"><div class="field"><label class="field-label">a</label><input type="number" id="dNA" value="-1" inputmode="decimal"></div><div class="field"><label class="field-label">b</label><input type="number" id="dNB" value="1" inputmode="decimal"></div></div>`;
+                else if (m === 'inv') el.innerHTML =
+                    `<div class="field"><label class="field-label">P(X ≤ x) =</label><input type="number" id="dNP" value="0.95" step="0.01" inputmode="decimal"></div>`;
+                else el.innerHTML =
+                    `<div class="field"><label class="field-label">x</label><input type="number" id="dNX" value="1" inputmode="decimal"></div>`;
+            }
+
+            function tFields(m) {
+                const el = document.getElementById('dTFields');
+                if (m === 'crit') el.innerHTML =
+                    `<div class="two-col"><div class="field"><label class="field-label">Conf. level</label><input type="number" id="dTConf" value="0.95" step="0.01" inputmode="decimal"></div><div class="field"><label class="field-label">Tail</label><select id="dTTail"><option value="two">Two-tailed</option><option value="one">One-tailed</option></select></div></div>`;
+                else el.innerHTML =
+                    `<div class="field"><label class="field-label">t</label><input type="number" id="dTVal" value="1.5" step="0.01" inputmode="decimal"></div>`;
+            }
+
+            function cFields(m) {
+                const el = document.getElementById('dCFields');
+                if (m === 'crit') el.innerHTML =
+                    `<div class="field"><label class="field-label">Right-tail α</label><input type="number" id="dCAlpha" value="0.05" step="0.01" inputmode="decimal"></div>`;
+                else el.innerHTML =
+                    `<div class="field"><label class="field-label">x</label><input type="number" id="dCX" value="5" step="0.1" inputmode="decimal"></div>`;
+            }
+
+            function render(dist) {
+                curDist = dist;
+                inputsEl.innerHTML = tmpl[dist];
+                grid.hidden = true;
+                chartCard.hidden = true;
+                err.textContent = '';
+                if (dist === 'normal') { normFields('le');
+                    initSeg('dNModeSeg', 'm', normFields); } else if (dist === 't') { tFields('cdf');
+                    initSeg('dTModeSeg', 'm', tFields); } else if (dist === 'chisq') { cFields('cdf');
+                    initSeg('dCModeSeg', 'm', cFields); }
+                document.getElementById('distCalcBtn').addEventListener('click', calc);
+            }
+
+            function calc() {
+                err.textContent = '';
+                try {
+                    if (curDist === 'normal') {
+                        const mu = parseFloat(document.getElementById('dNMu').value);
+                        const s = parseFloat(document.getElementById('dNSd').value);
+                        if (s <= 0) throw new Error('σ must be positive.');
+                        const m = segVal('dNModeSeg', 'm');
+                        let html = '',
+                            lo = null,
+                            hi = null;
+                        if (m === 'le') { const x = parseFloat(document.getElementById('dNX').value),
+                                p = normalCDF(x, mu, s);
+                            html = tile('P(X ≤ ' + fmt(x, 2) + ')', fmt(p), { hi: true, wide: true }) + tile('z-score', fmt((
+                                x - mu) / s));
+                            hi = x; } else if (m === 'ge') { const x = parseFloat(document.getElementById('dNX').value),
+                                p = 1 - normalCDF(x, mu, s);
+                            html = tile('P(X ≥ ' + fmt(x, 2) + ')', fmt(p), { hi: true, wide: true }) + tile('z-score', fmt((
+                                x - mu) / s));
+                            lo = x; } else if (m === 'btwn') { const a = parseFloat(document.getElementById('dNA').value),
+                                b = parseFloat(document.getElementById('dNB').value),
+                                lo2 = Math.min(a, b),
+                                hi2 = Math.max(a, b),
+                                p = normalCDF(hi2, mu, s) - normalCDF(lo2, mu, s);
+                            html = tile('P(' + fmt(lo2, 2) + ' ≤ X ≤ ' + fmt(hi2, 2) + ')', fmt(p), { hi: true,
+                                wide: true });
+                            lo = lo2;
+                            hi = hi2; } else { const p = parseFloat(document.getElementById('dNP').value); if (p <= 0 || p >=
+                                1) throw new Error('p must be (0,1).');
+                            const x = mu + s * normalInverse(p);
+                            html = tile('x where P(X ≤ x) = ' + fmt(p, 2), fmt(x), { hi: true, wide: true });
+                            hi = x; }
+                        grid.innerHTML = html;
+                        grid.hidden = false;
+                        chartCard.hidden = false;
+                        drawNormalCurve(document.getElementById('distCanvas'), mu, s, lo, hi);
+                    } else if (curDist === 'binomial') {
+                        const n = parseInt(document.getElementById('dBN').value, 10),
+                            p = parseFloat(document.getElementById('dBP').value),
+                            k = parseInt(document.getElementById('dBK').value, 10);
+                        if (n < 0 || n > 5000) throw new Error('n must be 0–5000.');
+                        if (p < 0 || p > 1) throw new Error('p must be [0,1].');
+                        if (k < 0 || k > n) throw new Error('k must be [0,n].');
+                        const m = segVal('dBModeSeg', 'm');
+                        let prob, label, hLo, hHi;
+                        if (m === 'eq') { prob = binomialPMF(k, n, p);
+                            label = 'P(X = ' + k + ')';
+                            hLo = k;
+                            hHi = k; } else if (m === 'le') { prob = binomialCDF(k, n, p);
+                            label = 'P(X ≤ ' + k + ')';
+                            hLo = 0;
+                            hHi = k; } else { prob = 1 - binomialCDF(k - 1, n, p);
+                            label = 'P(X ≥ ' + k + ')';
+                            hLo = k;
+                            hHi = n; }
+                        grid.innerHTML = tile(label, fmt(prob), { hi: true, wide: true }) + tile('Mean (np)', fmt(n *
+                            p)) + tile('Variance', fmt(n * p * (1 - p)));
+                        grid.hidden = false;
+                        chartCard.hidden = false;
+                        drawBarPMF(document.getElementById('distCanvas'), x => binomialPMF(x, n, p), n, hLo, hHi);
+                    } else if (curDist === 'poisson') {
+                        const lam = parseFloat(document.getElementById('dPL').value),
+                            k = parseInt(document.getElementById('dPK').value, 10);
+                        if (lam <= 0) throw new Error('λ must be positive.');
+                        if (k < 0) throw new Error('k ≥ 0 required.');
+                        const m = segVal('dPModeSeg', 'm');
+                        const kMax = Math.max(20, Math.ceil(lam + 6 * Math.sqrt(lam)), k + 5);
+                        let prob, label, hLo, hHi;
+                        if (m === 'eq') { prob = poissonPMF(k, lam);
+                            label = 'P(X = ' + k + ')';
+                            hLo = k;
+                            hHi = k; } else if (m === 'le') { prob = poissonCDF(k, lam);
+                            label = 'P(X ≤ ' + k + ')';
+                            hLo = 0;
+                            hHi = k; } else { prob = 1 - poissonCDF(k - 1, lam);
+                            label = 'P(X ≥ ' + k + ')';
+                            hLo = k;
+                            hHi = kMax; }
+                        grid.innerHTML = tile(label, fmt(prob), { hi: true, wide: true }) + tile('Mean = Variance (λ)',
+                            fmt(lam));
+                        grid.hidden = false;
+                        chartCard.hidden = false;
+                        drawBarPMF(document.getElementById('distCanvas'), x => poissonPMF(x, lam), kMax, hLo, hHi);
+                    } else if (curDist === 't') {
+                        const df = parseFloat(document.getElementById('dTDf').value);
+                        if (df <= 0) throw new Error('df must be positive.');
+                        const m = segVal('dTModeSeg', 'm');
+                        if (m === 'cdf') { const t = parseFloat(document.getElementById('dTVal').value),
+                                p = tCDF(t, df);
+                            grid.innerHTML = tile('P(T ≤ ' + fmt(t, 2) + ')', fmt(p), { hi: true, wide: true }) + tile(
+                                'P(T ≥ t)', fmt(1 - p)) + tile('Two-tail P(|T| ≥ |t|)', fmt(2 * (1 - tCDF(Math.abs(
+                                t), df)))); } else { const conf = parseFloat(document.getElementById('dTConf')
+                                .value),
+                                tail = document.getElementById('dTTail').value; if (conf <= 0 || conf >= 1) throw new Error(
+                                    'Conf. level must be (0,1).');
+                            const alpha = 1 - conf,
+                                p = tail === 'two' ? 1 - alpha / 2 : 1 - alpha,
+                                tc = tInv(p, df);
+                            grid.innerHTML = tile('Critical t', (tail === 'two' ? '±' : '') + fmt(tc), { hi: true,
+                                wide: true }); }
+                        grid.hidden = false;
+                        chartCard.hidden = true;
+                    } else if (curDist === 'chisq') {
+                        const df = parseFloat(document.getElementById('dCDf').value);
+                        if (df <= 0) throw new Error('df must be positive.');
+                        const m = segVal('dCModeSeg', 'm');
+                        if (m === 'cdf') { const x = parseFloat(document.getElementById('dCX').value),
+                                p = chiSqCDF(x, df);
+                            grid.innerHTML = tile('P(χ² ≤ ' + fmt(x, 2) + ')', fmt(p), { hi: true, wide: true }) +
+                            tile('P(χ² ≥ x)', fmt(1 - p)); } else { const alpha = parseFloat(document.getElementById(
+                                'dCAlpha').value); if (alpha <= 0 || alpha >= 1) throw new Error(
+                                'α must be (0,1).');
+                            grid.innerHTML = tile('Critical χ² (α = ' + fmt(alpha, 2) + ')', fmt(chiSqInv(1 -
+                                alpha, df)), { hi: true, wide: true }); }
+                        grid.hidden = false;
+                        chartCard.hidden = true;
+                    }
+                } catch (e) { err.textContent = e.message;
+                    grid.hidden = true;
+                    chartCard.hidden = true; }
+            }
+            initSeg('distTypeSeg', 'dist', render);
+            render('normal');
+        })();
+
+        // ---- TESTS ----
+        (function() {
+            const inputsEl = document.getElementById('testInputs'),
+                err = document.getElementById('testError');
+            const grid = document.getElementById('testGrid'),
+                concl = document.getElementById('testConclusion');
+            let curTest = 'one-t',
+                curAlpha = 0.05;
+            const tmpl = {
+                'one-t': `<div class="seg" id="oneTMode"><button class="seg-btn active" data-m="raw">Raw data</button><button class="seg-btn" data-m="sum">Summary</button></div>
+              <div id="oneTF"></div>
+              <div class="field"><label class="field-label">Hypothesized mean (μ₀)</label><input type="number" id="oneTMu" value="0" inputmode="decimal"></div>
+              <button class="btn btn-primary" id="testCalcBtn" style="width:100%;margin-top:8px;">Run test</button>`,
+                'two-t': `<div class="seg" id="twoTMode"><button class="seg-btn active" data-m="raw">Raw data</button><button class="seg-btn" data-m="sum">Summary</button></div>
+              <div id="twoTF"></div>
+              <button class="btn btn-primary" id="testCalcBtn" style="width:100%;margin-top:8px;">Run test</button>`,
+                'paired-t': `<div class="field"><label class="field-label">Sample 1</label><textarea id="pA" rows="3" placeholder="12, 14, 11, 15"></textarea></div>
+              <div class="field"><label class="field-label">Sample 2 (same length)</label><textarea id="pB" rows="3" placeholder="10, 13, 9, 14"></textarea></div>
+              <button class="btn btn-primary" id="testCalcBtn" style="width:100%;margin-top:8px;">Run test</button>`,
+                'z': `<div class="seg" id="zMode"><button class="seg-btn active" data-m="raw">Raw data</button><button class="seg-btn" data-m="sum">Summary</button></div>
+              <div id="zF"></div>
+              <div class="two-col">
+                <div class="field"><label class="field-label">μ₀</label><input type="number" id="zMu" value="0" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">Population σ</label><input type="number" id="zSig" value="1" inputmode="decimal"></div>
+              </div>
+              <button class="btn btn-primary" id="testCalcBtn" style="width:100%;margin-top:8px;">Run test</button>`,
+                'chisq-gof': `<div class="field"><label class="field-label">Observed frequencies</label><textarea id="gofO" rows="2" placeholder="18, 22, 20, 40"></textarea></div>
+              <div class="field"><label class="field-label">Expected frequencies <span class="field-hint">blank = equal</span></label><textarea id="gofE" rows="2" placeholder="25, 25, 25, 25"></textarea></div>
+              <button class="btn btn-primary" id="testCalcBtn" style="width:100%;margin-top:8px;">Run test</button>`
+            };
+
+            function oneTF(m) { document.getElementById('oneTF').innerHTML = m === 'sum' ?
+                    `<div class="two-col"><div class="field"><label class="field-label">Sample mean</label><input type="number" id="otM" value="5" inputmode="decimal"></div><div class="field"><label class="field-label">Sample SD</label><input type="number" id="otS" value="1" inputmode="decimal"></div></div><div class="field"><label class="field-label">n</label><input type="number" id="otN" value="10" inputmode="numeric"></div>` :
+                    `<div class="field"><label class="field-label">Sample data</label><textarea id="otD" rows="3" placeholder="12, 14, 11, 15, 13"></textarea></div>`; }
+
+            function twoTF(m) { document.getElementById('twoTF').innerHTML = m === 'sum' ?
+                    `<div class="two-col"><div class="field"><label class="field-label">Mean 1</label><input type="number" id="ttM1" value="10" inputmode="decimal"></div><div class="field"><label class="field-label">SD 1</label><input type="number" id="ttS1" value="2" inputmode="decimal"></div></div><div class="field"><label class="field-label">n1</label><input type="number" id="ttN1" value="15" inputmode="numeric"></div><div class="two-col"><div class="field"><label class="field-label">Mean 2</label><input type="number" id="ttM2" value="8" inputmode="decimal"></div><div class="field"><label class="field-label">SD 2</label><input type="number" id="ttS2" value="2.5" inputmode="decimal"></div></div><div class="field"><label class="field-label">n2</label><input type="number" id="ttN2" value="15" inputmode="numeric"></div>` :
+                    `<div class="field"><label class="field-label">Sample 1</label><textarea id="ttD1" rows="3" placeholder="12, 14, 11, 15, 13"></textarea></div><div class="field"><label class="field-label">Sample 2</label><textarea id="ttD2" rows="3" placeholder="9, 10, 8, 12, 11"></textarea></div>`; }
+
+            function zF(m) { document.getElementById('zF').innerHTML = m === 'sum' ?
+                    `<div class="two-col"><div class="field"><label class="field-label">Sample mean</label><input type="number" id="zM" value="5" inputmode="decimal"></div><div class="field"><label class="field-label">n</label><input type="number" id="zN" value="30" inputmode="numeric"></div></div>` :
+                    `<div class="field"><label class="field-label">Sample data</label><textarea id="zD" rows="3" placeholder="12, 14, 11, 15, 13"></textarea></div>`; }
+
+            function showVerdict(reject, sName, sVal, df, p) {
+                let txt = `<strong>${sName} = ${fmt(sVal)}</strong>`;
+                if (df !== undefined) txt += ` &nbsp;·&nbsp; df = ${typeof df==='number'&&!Number.isInteger(df)?fmt(df,2):df}`;
+                txt += ` &nbsp;·&nbsp; p = ${fmtP(p)}<br><br>`;
+                txt += reject ?
+                    `p ${p<curAlpha?'<':'≥'} α (${curAlpha}) → <strong>Reject H₀.</strong> Statistically significant.` :
+                    `p ${p<curAlpha?'<':'≥'} α (${curAlpha}) → <strong>Fail to reject H₀.</strong> Not statistically significant.`;
+                concl.innerHTML = txt;
+                concl.classList.toggle('reject', reject);
+                concl.hidden = false;
+            }
+
+            function render(test) {
+                curTest = test;
+                inputsEl.innerHTML = tmpl[test];
+                grid.hidden = true;
+                concl.hidden = true;
+                err.textContent = '';
+                if (test === 'one-t') { oneTF('raw');
+                    initSeg('oneTMode', 'm', oneTF); } else if (test === 'two-t') { twoTF('raw');
+                    initSeg('twoTMode', 'm', twoTF); } else if (test === 'z') { zF('raw');
+                    initSeg('zMode', 'm', zF); }
+                document.getElementById('testCalcBtn').addEventListener('click', run);
+            }
+
+            function run() {
+                err.textContent = '';
+                try {
+                    if (curTest === 'one-t') {
+                        const mode = segVal('oneTMode', 'm'),
+                            mu0 = parseFloat(document.getElementById('oneTMu').value);
+                        let m, s, n;
+                        if (mode === 'sum') { m = parseFloat(document.getElementById('otM').value);
+                            s = parseFloat(document.getElementById('otS').value);
+                            n = parseInt(document.getElementById('otN').value, 10); } else { const d = parseNums(
+                                document.getElementById('otD').value); if (d.length < 2) throw new Error(
+                                'Need ≥ 2 data points.');
+                            m = mean(d);
+                            s = sd(d, true);
+                            n = d.length; }
+                        if (n < 2 || s <= 0) throw new Error('n ≥ 2 and SD > 0 required.');
+                        const se = s / Math.sqrt(n),
+                            t = (m - mu0) / se,
+                            df = n - 1,
+                            p = 2 * (1 - tCDF(Math.abs(t), df));
+                        grid.innerHTML = tile('t-statistic', fmt(t), { hi: true }) + tile('df', df) + tile(
+                            'Sample mean', fmt(m)) + tile('Std. error', fmt(se)) + tile(
+                            'p-value (two-tailed)', fmtP(p), { cyan: true, wide: true });
+                        grid.hidden = false;
+                        showVerdict(p < curAlpha, 't', t, df, p);
+                    } else if (curTest === 'two-t') {
+                        const mode = segVal('twoTMode', 'm');
+                        let m1, s1, n1, m2, s2, n2;
+                        if (mode === 'sum') { m1 = parseFloat(document.getElementById('ttM1').value);
+                            s1 = parseFloat(document.getElementById('ttS1').value);
+                            n1 = parseInt(document.getElementById('ttN1').value, 10);
+                            m2 = parseFloat(document.getElementById('ttM2').value);
+                            s2 = parseFloat(document.getElementById('ttS2').value);
+                            n2 = parseInt(document.getElementById('ttN2').value, 10); } else { const d1 = parseNums(
+                                document.getElementById('ttD1').value),
+                                d2 = parseNums(document.getElementById('ttD2').value); if (d1.length < 2 || d2
+                                .length < 2) throw new Error('Each sample needs ≥ 2 data points.');
+                            m1 = mean(d1);
+                            s1 = sd(d1, true);
+                            n1 = d1.length;
+                            m2 = mean(d2);
+                            s2 = sd(d2, true);
+                            n2 = d2.length; }
+                        if (n1 < 2 || n2 < 2 || s1 <= 0 || s2 <= 0) throw new Error(
+                            'n ≥ 2 and SD > 0 for both samples.');
+                        const se = Math.sqrt(s1 * s1 / n1 + s2 * s2 / n2),
+                            t = (m1 - m2) / se;
+                        const df = (s1 * s1 / n1 + s2 * s2 / n2) ** 2 / (((s1 * s1 / n1) ** 2) / (n1 - 1) + ((s2 *
+                            s2 / n2) ** 2) / (n2 - 1));
+                        const p = 2 * (1 - tCDF(Math.abs(t), df));
+                        grid.innerHTML = tile('t (Welch)', fmt(t), { hi: true }) + tile('df', fmt(df, 2)) + tile(
+                            'Mean diff.', fmt(m1 - m2)) + tile('Std. error', fmt(se)) + tile(
+                            'p-value (two-tailed)', fmtP(p), { cyan: true, wide: true });
+                        grid.hidden = false;
+                        showVerdict(p < curAlpha, 't', t, df, p);
+                    } else if (curTest === 'paired-t') {
+                        const a = parseNums(document.getElementById('pA').value),
+                            b = parseNums(document.getElementById('pB').value);
+                        if (a.length < 2 || a.length !== b.length) throw new Error(
+                            'Equal length ≥ 2 pairs required.');
+                        const diffs = a.map((v, i) => v - b[i]),
+                            m = mean(diffs),
+                            s = sd(diffs, true),
+                            n = diffs.length;
+                        if (s <= 0) throw new Error('No variation in differences.');
+                        const se = s / Math.sqrt(n),
+                            t = m / se,
+                            df = n - 1,
+                            p = 2 * (1 - tCDF(Math.abs(t), df));
+                        grid.innerHTML = tile('t-statistic', fmt(t), { hi: true }) + tile('df', df) + tile(
+                            'Mean diff.', fmt(m)) + tile('Std. error', fmt(se)) + tile(
+                            'p-value (two-tailed)', fmtP(p), { cyan: true, wide: true });
+                        grid.hidden = false;
+                        showVerdict(p < curAlpha, 't', t, df, p);
+                    } else if (curTest === 'z') {
+                        const mode = segVal('zMode', 'm'),
+                            mu0 = parseFloat(document.getElementById('zMu').value),
+                            sigma = parseFloat(document.getElementById('zSig').value);
+                        let m, n;
+                        if (mode === 'sum') { m = parseFloat(document.getElementById('zM').value);
+                            n = parseInt(document.getElementById('zN').value, 10); } else { const d = parseNums(
+                                document.getElementById('zD').value); if (!d.length) throw new Error(
+                                'Enter at least 1 data point.');
+                            m = mean(d);
+                            n = d.length; }
+                        if (sigma <= 0 || n < 1) throw new Error('σ > 0 and n ≥ 1 required.');
+                        const se = sigma / Math.sqrt(n),
+                            z = (m - mu0) / se,
+                            p = 2 * (1 - normalCDF(Math.abs(z)));
+                        grid.innerHTML = tile('z-statistic', fmt(z), { hi: true }) + tile('Sample mean', fmt(m)) +
+                            tile('Std. error', fmt(se)) + tile('p-value (two-tailed)', fmtP(p), { cyan: true,
+                                wide: true });
+                        grid.hidden = false;
+                        showVerdict(p < curAlpha, 'z', z, undefined, p);
+                    } else if (curTest === 'chisq-gof') {
+                        const obs = parseNums(document.getElementById('gofO').value);
+                        let exp = parseNums(document.getElementById('gofE').value);
+                        if (obs.length < 2) throw new Error('Enter ≥ 2 observed frequencies.');
+                        if (!exp.length) { const tot = obs.reduce((a, b) => a + b, 0);
+                            exp = obs.map(() => tot / obs.length); }
+                        if (exp.length !== obs.length) throw new Error(
+                            'Observed and expected must have equal length.');
+                        if (exp.some(e => e <= 0)) throw new Error('Expected frequencies must be positive.');
+                        const chi2 = obs.reduce((a, o, i) => a + ((o - exp[i]) ** 2) / exp[i], 0),
+                            df = obs.length - 1,
+                            p = 1 - chiSqCDF(chi2, df);
+                        grid.innerHTML = tile('χ² statistic', fmt(chi2), { hi: true }) + tile('df', df) + tile(
+                            'p-value', fmtP(p), { cyan: true, wide: true });
+                        grid.hidden = false;
+                        showVerdict(p < curAlpha, 'χ²', chi2, df, p);
+                    }
+                } catch (e) { err.textContent = e.message;
+                    grid.hidden = true;
+                    concl.hidden = true; }
+            }
+            initSeg('testTypeSeg', 'test', render);
+            document.getElementById('alphaSeg').addEventListener('click', e => {
+                const b = e.target.closest('.seg-btn');
+                if (!b) return;
+                [...e.currentTarget.children].forEach(c => c.classList.remove('active'));
+                b.classList.add('active');
+                curAlpha = parseFloat(b.dataset.alpha);
+            });
+            render('one-t');
+        })();
+
+        // ---- REGRESSION ----
+        (function() {
+            const inp = document.getElementById('regInput'),
+                err = document.getElementById('regError');
+            const grid = document.getElementById('regGrid'),
+                chartCard = document.getElementById('regChartCard');
+            const predCard = document.getElementById('regPredictCard'),
+                predX = document.getElementById('regPredictX');
+            const predRes = document.getElementById('regPredictResult');
+            let sl = null,
+                ic = null;
+
+            function parsePairs(str) {
+                const xs = [],
+                    ys = [];
+                str.split('\n').map(l => l.trim()).filter(l => l).forEach(line => {
+                    const parts = line.split(/[,;\s]+/).map(Number).filter(n => !isNaN(n));
+                    if (parts.length >= 2) { xs.push(parts[0]);
+                        ys.push(parts[1]); }
+                });
+                return { xs, ys };
+            }
+            document.getElementById('regCalcBtn').addEventListener('click', () => {
+                err.textContent = '';
+                const { xs, ys } = parsePairs(inp.value);
+                if (xs.length < 2) { err.textContent = 'Enter ≥ 2 valid (x, y) pairs.';
+                    grid.hidden = true;
+                    chartCard.hidden = true;
+                    predCard.hidden = true; return; }
+                const n = xs.length,
+                    mx = mean(xs),
+                    my = mean(ys);
+                let sxy = 0,
+                    sxx = 0,
+                    syy = 0;
+                for (let i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my);
+                    sxx += (xs[i] - mx) ** 2;
+                    syy += (ys[i] - my) ** 2; }
+                if (sxx === 0) { err.textContent = 'All x values are identical.';
+                    grid.hidden = true;
+                    chartCard.hidden = true;
+                    predCard.hidden = true; return; }
+                sl = sxy / sxx;
+                ic = my - sl * mx;
+                const r = sxy / Math.sqrt(sxx * syy),
+                    r2 = r * r;
+                const eq = `y = ${fmt(sl,3)}x ${ic>=0?'+':'-'} ${fmt(Math.abs(ic),3)}`;
+                grid.innerHTML = tile('Equation', `<div class="formula">${eq}</div>`, { wide: true }) + tile('Slope',
+                    fmt(sl), { hi: true }) + tile('Intercept', fmt(ic)) + tile('Pearson r', fmt(r), { cyan: true }) +
+                    tile('R²', fmt(r2)) + tile('n pairs', n);
+                grid.hidden = false;
+                chartCard.hidden = false;
+                predCard.hidden = false;
+                predRes.textContent = '—';
+                drawScatter(document.getElementById('regCanvas'), xs, ys, sl, ic);
+            });
+            document.getElementById('regClearBtn').addEventListener('click', () => {
+                inp.value = '';
+                err.textContent = '';
+                grid.hidden = true;
+                chartCard.hidden = true;
+                predCard.hidden = true;
+                sl = null;
+                ic = null;
+            });
+            predX.addEventListener('input', () => {
+                if (sl === null) return;
+                const x = parseFloat(predX.value);
+                predRes.textContent = isNaN(x) ? '—' : 'ŷ = ' + fmt(sl * x + ic);
+            });
+        })();
+
+        // ---- CI ----
+        (function() {
+            const inputsEl = document.getElementById('ciInputs'),
+                err = document.getElementById('ciError'),
+                grid = document.getElementById('ciGrid');
+            let curType = 'mean',
+                curLevel = 0.95;
+            const tmpl = {
+                mean: `<div class="two-col"><div class="field"><label class="field-label">Sample mean</label><input type="number" id="ciM" value="50" inputmode="decimal"></div><div class="field"><label class="field-label">n</label><input type="number" id="ciN" value="25" inputmode="numeric"></div></div>
+              <div class="field"><label class="field-label">Std dev</label><input type="number" id="ciSD" value="8" inputmode="decimal"></div>
+              <div class="seg" id="ciSigSeg"><button class="seg-btn" data-k="yes">σ known (z)</button><button class="seg-btn active" data-k="no">σ unknown (t)</button></div>
+              <button class="btn btn-primary" id="ciCalcBtn" style="width:100%;margin-top:4px;">Calculate</button>`,
+                prop: `<div class="seg" id="ciPMode"><button class="seg-btn active" data-m="phat">p̂ directly</button><button class="seg-btn" data-m="count">Counts</button></div>
+              <div id="ciPF"></div>
+              <button class="btn btn-primary" id="ciCalcBtn" style="width:100%;margin-top:4px;">Calculate</button>`
+            };
+
+            function propF(m) { document.getElementById('ciPF').innerHTML = m === 'count' ?
+                    `<div class="two-col"><div class="field"><label class="field-label">Successes (x)</label><input type="number" id="ciX" value="40" inputmode="numeric"></div><div class="field"><label class="field-label">n</label><input type="number" id="ciPN2" value="100" inputmode="numeric"></div></div>` :
+                    `<div class="two-col"><div class="field"><label class="field-label">p̂</label><input type="number" id="ciPhat" value="0.4" step="0.01" inputmode="decimal"></div><div class="field"><label class="field-label">n</label><input type="number" id="ciPN" value="100" inputmode="numeric"></div></div>`; }
+
+            function render(type) {
+                curType = type;
+                inputsEl.innerHTML = tmpl[type];
+                grid.hidden = true;
+                err.textContent = '';
+                if (type === 'prop') { propF('phat');
+                    initSeg('ciPMode', 'm', propF); }
+                document.getElementById('ciCalcBtn').addEventListener('click', calc);
+            }
+
+            function calc() {
+                err.textContent = '';
+                try {
+                    if (curType === 'mean') {
+                        const m = parseFloat(document.getElementById('ciM').value),
+                            s = parseFloat(document.getElementById('ciSD').value),
+                            n = parseInt(document.getElementById('ciN').value, 10);
+                        if (n < 2 || s <= 0) throw new Error('n ≥ 2 and SD > 0 required.');
+                        const known = segVal('ciSigSeg', 'k') === 'yes',
+                            se = s / Math.sqrt(n),
+                            alpha = 1 - curLevel;
+                        const crit = known ? normalInverse(1 - alpha / 2) : tInv(1 - alpha / 2, n - 1),
+                            label = known ? 'z*' : 't*';
+                        const mg = crit * se;
+                        grid.innerHTML = tile('Confidence interval', `[${fmt(m-mg)}, ${fmt(m+mg)}]`, { hi: true,
+                            wide: true }) + tile(label, fmt(crit)) + tile('Margin of error', fmt(mg)) + tile(
+                            'Std. error', fmt(se));
+                        grid.hidden = false;
+                    } else {
+                        const mode = segVal('ciPMode', 'm');
+                        let phat, n;
+                        if (mode === 'count') { const x = parseFloat(document.getElementById('ciX').value);
+                            n = parseInt(document.getElementById('ciPN2').value, 10); if (n < 1 || x < 0 || x > n)
+                                throw new Error('Need 0 ≤ x ≤ n.');
+                            phat = x / n; } else { phat = parseFloat(document.getElementById('ciPhat').value);
+                            n = parseInt(document.getElementById('ciPN').value, 10); if (phat < 0 || phat > 1)
+                                throw new Error('p̂ must be [0,1].'); if (n < 1) throw new Error(
+                                'n ≥ 1 required.'); }
+                        const se = Math.sqrt(phat * (1 - phat) / n),
+                            z = normalInverse(1 - (1 - curLevel) / 2),
+                            mg = z * se;
+                        grid.innerHTML = tile('Confidence interval',
+                            `[${fmt(Math.max(0,phat-mg))}, ${fmt(Math.min(1,phat+mg))}]`, { hi: true,
+                            wide: true }) + tile('p̂', fmt(phat)) + tile('z*', fmt(z)) + tile('Margin of error',
+                            fmt(mg));
+                        grid.hidden = false;
+                    }
+                } catch (e) { err.textContent = e.message;
+                    grid.hidden = true; }
+            }
+            initSeg('ciTypeSeg', 'ci', render);
+            initSeg('ciLevelSeg', 'level', v => { curLevel = parseFloat(v); });
+            render('mean');
+        })();
+
+        // ---- TOOLS ----
+        (function() {
+            const allTools = ['tool-ss', 'tool-norm-test', 'tool-zconv', 'tool-bayes', 'tool-effect'];
+
+            function showTool(t) { allTools.forEach(id => { document.getElementById(id).hidden = (id !== 'tool-' + t); }); }
+            initSeg('toolTypeSeg', 'tool', showTool);
+
+            let ssPurpose = 'mean',
+                ssConf = 0.95;
+            initSeg('ssPurposeSeg', 'p', p => {
+                ssPurpose = p;
+                const el = document.getElementById('ssFields');
+                if (p === 'prop') {
+                    el.innerHTML = `<div class="two-col">
+                <div class="field"><label class="field-label">Margin of error (E)</label><input type="number" id="ssE" value="0.05" step="0.01" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">p̂ estimate</label><input type="number" id="ssPhat" value="0.5" step="0.01" inputmode="decimal"></div>
+              </div>
+              <div class="seg" id="ssConfSeg"><button class="seg-btn" data-c="0.90">90%</button><button class="seg-btn active" data-c="0.95">95%</button><button class="seg-btn" data-c="0.99">99%</button></div>`;
+                    initSeg('ssConfSeg', 'c', c => { ssConf = parseFloat(c); });
+                } else {
+                    el.innerHTML = `<div class="two-col">
+                <div class="field"><label class="field-label">Margin of error (E)</label><input type="number" id="ssE" value="5" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">Population σ</label><input type="number" id="ssSigma" value="15" inputmode="decimal"></div>
+              </div>
+              <div class="seg" id="ssConfSeg"><button class="seg-btn" data-c="0.90">90%</button><button class="seg-btn active" data-c="0.95">95%</button><button class="seg-btn" data-c="0.99">99%</button></div>`;
+                    initSeg('ssConfSeg', 'c', c => { ssConf = parseFloat(c); });
+                }
+            });
+            initSeg('ssConfSeg', 'c', c => { ssConf = parseFloat(c); });
+
+            document.getElementById('ssCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('ssError'),
+                    res = document.getElementById('ssResult'),
+                    nEl = document.getElementById('ssN');
+                err.textContent = '';
+                try {
+                    const E = parseFloat(document.getElementById('ssE').value);
+                    const z = normalInverse(1 - (1 - ssConf) / 2);
+                    if (E <= 0) throw new Error('E must be positive.');
+                    let n;
+                    if (ssPurpose === 'prop') {
+                        const ph = parseFloat(document.getElementById('ssPhat').value);
+                        if (ph < 0 || ph > 1) throw new Error('p̂ must be [0,1].');
+                        n = Math.ceil((z * z * ph * (1 - ph)) / (E * E));
+                    } else {
+                        const sig = parseFloat(document.getElementById('ssSigma').value);
+                        if (sig <= 0) throw new Error('σ must be positive.');
+                        n = Math.ceil((z * sig / E) ** 2);
+                    }
+                    nEl.textContent = n.toLocaleString();
+                    res.hidden = false;
+                } catch (e) { err.textContent = e.message;
+                    res.hidden = true; }
+            });
+
+            document.getElementById('ntCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('ntError'),
+                    grid = document.getElementById('ntGrid'),
+                    chartCard = document.getElementById('ntChartCard');
+                err.textContent = '';
+                grid.hidden = true;
+                chartCard.hidden = true;
+                const data = parseNums(document.getElementById('ntData').value);
+                if (data.length < 3 || data.length > 100) { err.textContent = 'Enter 3–100 values.'; return; }
+                const n = data.length,
+                    m = mean(data),
+                    s = sd(data, true);
+                const sorted = [...data].sort((a, b) => a - b);
+                let num = 0,
+                    den = 0;
+                const half = Math.floor(n / 2);
+                const orderStats = sorted.map((_, i) => normalInverse((i + 1 - 0.375) / (n + 0.25)));
+                const den2 = orderStats.reduce((t, v) => t + v * v, 0);
+                for (let i = 0; i < half; i++) {
+                    const ai = orderStats[n - 1 - i] / Math.sqrt(den2);
+                    num += ai * (sorted[n - 1 - i] - sorted[i]);
+                }
+                den = sorted.reduce((t, v) => t + (v - m) ** 2, 0);
+                const W = Math.min(1, (num * num) / den);
+                const y = Math.log(1 - W);
+                const mu_y = -1.2725 + 1.0521 * Math.log(Math.log(n));
+                const sd_y = 1.0308 - 0.26763 * Math.log(n);
+                const z = (y - mu_y) / sd_y;
+                const p = 1 - normalCDF(z);
+                const normal = p > 0.05;
+                grid.innerHTML =
+                    tile('W statistic', fmt(W, 4), { hi: true }) +
+                    tile('p-value', fmtP(p), { cyan: true }) +
+                    tile('Skewness', fmt(skewness(data))) +
+                    tile('Excess Kurtosis', fmt(kurtosis(data))) +
+                    tile('Assessment', normal ? '✓ Likely normal' : '✗ Possibly non-normal', { wide: true,
+                        sm: true });
+                grid.hidden = false;
+                chartCard.hidden = false;
+                drawQQ(document.getElementById('ntCanvas'), data);
+            });
+            document.getElementById('ntClearBtn').addEventListener('click', () => {
+                document.getElementById('ntData').value = '';
+                document.getElementById('ntError').textContent = '';
+                document.getElementById('ntGrid').hidden = true;
+                document.getElementById('ntChartCard').hidden = true;
+            });
+
+            document.getElementById('zcCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('zcError'),
+                    out = document.getElementById('zcOutput');
+                err.textContent = '';
+                out.hidden = true;
+                try {
+                    const mu = parseFloat(document.getElementById('zcMu').value);
+                    const s = parseFloat(document.getElementById('zcSd').value);
+                    const x = parseFloat(document.getElementById('zcX').value);
+                    if (s <= 0) throw new Error('σ must be positive.');
+                    const z = (x - mu) / s;
+                    const pBelow = normalCDF(z) * 100,
+                        pAbove = (1 - normalCDF(z)) * 100;
+                    out.innerHTML = `
+                z-score: <b>${fmt(z)}</b><br>
+                P(X ≤ ${fmt(x,2)}): <b>${fmt(pBelow/100)}</b> (${pBelow.toFixed(2)}th percentile)<br>
+                P(X ≥ ${fmt(x,2)}): <b>${fmt(pAbove/100)}</b><br>
+                Std. deviations from mean: <b>${Math.abs(z)<1?'within':'outside'} 1σ</b>
+              `;
+                    out.hidden = false;
+                } catch (e) { err.textContent = e.message; }
+            });
+
+            document.getElementById('bayesCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('bayesError'),
+                    grid = document.getElementById('bayesGrid');
+                err.textContent = '';
+                grid.hidden = true;
+                try {
+                    const pA = parseFloat(document.getElementById('bayesA').value);
+                    const pBgA = parseFloat(document.getElementById('bayesBgA').value);
+                    const pBgnA = parseFloat(document.getElementById('bayesBgnA').value);
+                    if ([pA, pBgA, pBgnA].some(v => v < 0 || v > 1)) throw new Error(
+                        'All values must be in [0, 1].');
+                    const pB = pBgA * pA + pBgnA * (1 - pA);
+                    const pAgB = (pBgA * pA) / pB;
+                    const lr = pBgA / pBgnA;
+                    grid.innerHTML =
+                        tile('P(A|B) — Posterior', fmt(pAgB), { hi: true, wide: true }) +
+                        tile('P(B) — Total prob.', fmt(pB)) +
+                        tile('Likelihood ratio', fmt(lr)) +
+                        tile('Prior odds', fmt(pA / (1 - pA), 3)) +
+                        tile('Posterior odds', fmt(pAgB / (1 - pAgB), 3));
+                    grid.hidden = false;
+                } catch (e) { err.textContent = e.message; }
+            });
+
+            let effectMode = 'twosample';
+
+            function renderEffectFields(m) {
+                effectMode = m;
+                const el = document.getElementById('effectFields');
+                if (m === 'onesample') {
+                    el.innerHTML = `<div class="two-col">
+                <div class="field"><label class="field-label">Sample mean</label><input type="number" id="efM" value="5.5" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">μ₀</label><input type="number" id="efMu0" value="5" inputmode="decimal"></div>
+              </div>
+              <div class="field"><label class="field-label">Population σ (or sample SD)</label><input type="number" id="efS" value="1" inputmode="decimal"></div>`;
+                } else {
+                    el.innerHTML = `<div class="two-col">
+                <div class="field"><label class="field-label">Mean 1</label><input type="number" id="efM1" value="10" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">Mean 2</label><input type="number" id="efM2" value="8" inputmode="decimal"></div>
+              </div>
+              <div class="two-col">
+                <div class="field"><label class="field-label">SD 1</label><input type="number" id="efS1" value="2" inputmode="decimal"></div>
+                <div class="field"><label class="field-label">SD 2</label><input type="number" id="efS2" value="2.5" inputmode="decimal"></div>
+              </div>
+              <div class="two-col">
+                <div class="field"><label class="field-label">n1</label><input type="number" id="efN1" value="15" inputmode="numeric"></div>
+                <div class="field"><label class="field-label">n2</label><input type="number" id="efN2" value="15" inputmode="numeric"></div>
+              </div>`;
+                }
+            }
+            renderEffectFields('twosample');
+            initSeg('effectModeSeg', 'm', renderEffectFields);
+
+            document.getElementById('effectCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('effectError'),
+                    grid = document.getElementById('effectGrid'),
+                    verd = document.getElementById('effectVerdict');
+                err.textContent = '';
+                grid.hidden = true;
+                verd.hidden = true;
+                try {
+                    let d;
+                    if (effectMode === 'onesample') {
+                        const m = parseFloat(document.getElementById('efM').value);
+                        const mu0 = parseFloat(document.getElementById('efMu0').value);
+                        const s = parseFloat(document.getElementById('efS').value);
+                        if (s <= 0) throw new Error('SD must be positive.');
+                        d = (m - mu0) / s;
+                    } else {
+                        const m1 = parseFloat(document.getElementById('efM1').value),
+                            m2 = parseFloat(document.getElementById('efM2').value);
+                        const s1 = parseFloat(document.getElementById('efS1').value),
+                            s2 = parseFloat(document.getElementById('efS2').value);
+                        const n1 = parseInt(document.getElementById('efN1').value, 10),
+                            n2 = parseInt(document.getElementById('efN2').value, 10);
+                        if (s1 <= 0 || s2 <= 0) throw new Error('SDs must be positive.');
+                        const sp = Math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2));
+                        d = (m1 - m2) / sp;
+                    }
+                    const absd = Math.abs(d);
+                    let interp = '';
+                    if (absd < 0.2) interp = 'Negligible';
+                    else if (absd < 0.5) interp = 'Small';
+                    else if (absd < 0.8) interp = 'Medium';
+                    else interp = 'Large';
+                    grid.innerHTML = tile("Cohen's d", fmt(d), { hi: true, wide: true }) + tile('|d|', fmt(absd)) +
+                        tile('Interpretation', interp);
+                    grid.hidden = false;
+                    verd.innerHTML =
+                        `Effect size of <strong>${fmt(d)}</strong> is conventionally considered <strong>${interp.toLowerCase()}</strong> (Cohen 1988: small ≥ 0.2, medium ≥ 0.5, large ≥ 0.8).`;
+                    verd.classList.remove('reject');
+                    verd.hidden = false;
+                } catch (e) { err.textContent = e.message; }
+            });
+        })();
+
+        // ---- CHARTS ----
+        (function() {
+            let ctype = 'bar';
+            const grid = document.getElementById('chartTypeSeg');
+            grid.addEventListener('click', e => {
+                const b = e.target.closest('.seg-btn');
+                if (!b) return;
+                [...grid.children].forEach(c => c.classList.remove('active'));
+                b.classList.add('active');
+                ctype = b.dataset.ct;
+                document.getElementById('chartYField').hidden = ctype !== 'scatter';
+                document.getElementById('chartOhlcField').hidden = ctype !== 'candle';
+            });
+
+            function parseLabeled(str) {
+                const parts = str.split(/[,\n]+/).map(s => s.trim()).filter(Boolean);
+                const labels = [],
+                    vals = [];
+                parts.forEach((p, i) => {
+                    if (p.includes(':')) { const [l, v] = p.split(':');
+                        labels.push(l.trim());
+                        vals.push(Number(v)); } else { labels.push('#' + (i + 1));
+                        vals.push(Number(p)); }
+                });
+                return { labels, vals: vals.filter(v => !Number.isNaN(v)) };
+            }
+
+            function drawBarLine(canvas, labels, vals, style) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const p = { l: 34, r: 10, t: 14, b: 24 };
+                const pw = w - p.l - p.r,
+                    ph = h - p.t - p.b,
+                    n = vals.length;
+                const mx = Math.max(...vals, 0),
+                    mn = Math.min(...vals, 0);
+                axes(ctx, w, h, p);
+                const toY = v => p.t + ph - ((v - mn) / ((mx - mn) || 1)) * ph;
+                if (style === 'area' || style === 'line') {
+                    ctx.beginPath();
+                    vals.forEach((v, i) => { const x = p.l + (i + 0.5) * (pw / n),
+                            y = toY(v);
+                        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+                    if (style === 'area') {
+                        ctx.lineTo(p.l + (n - 0.5) * (pw / n), h - p.b);
+                        ctx.lineTo(p.l + 0.5 * (pw / n), h - p.b);
+                        ctx.closePath();
+                        const g = ctx.createLinearGradient(0, p.t, 0, h - p.b);
+                        g.addColorStop(0, CV + '77');
+                        g.addColorStop(1, CV + '08');
+                        ctx.fillStyle = g;
+                        ctx.fill();
+                        ctx.beginPath();
+                        vals.forEach((v, i) => { const x = p.l + (i + 0.5) * (pw / n),
+                                y = toY(v);
+                            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+                    }
+                    const lg = ctx.createLinearGradient(0, 0, w, 0);
+                    lg.addColorStop(0, CV);
+                    lg.addColorStop(1, CY);
+                    ctx.strokeStyle = lg;
+                    ctx.lineWidth = 2.4;
+                    ctx.stroke();
+                    ctx.fillStyle = CY;
+                    vals.forEach((v, i) => { const x = p.l + (i + 0.5) * (pw / n),
+                            y = toY(v);
+                        ctx.beginPath();
+                        ctx.arc(x, y, 2.6, 0, Math.PI * 2);
+                        ctx.fill(); });
+                } else {
+                    vals.forEach((v, i) => {
+                        const x = p.l + i * (pw / n) + 2,
+                            bw = pw / n - 4,
+                            y0 = toY(0),
+                            y1 = toY(v);
+                        const g = ctx.createLinearGradient(0, Math.min(y0, y1), 0, Math.max(y0, y1));
+                        g.addColorStop(0, CV + 'cc');
+                        g.addColorStop(1, CY + '66');
+                        ctx.fillStyle = g;
+                        ctx.fillRect(x, Math.min(y0, y1), bw, Math.abs(y1 - y0) || 1);
+                    });
+                }
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '9px JetBrains Mono,monospace';
+                ctx.textAlign = 'center';
+                labels.forEach((l, i) => { if (n <= 14) ctx.fillText(l.slice(0, 4), p.l + (i + 0.5) * (pw / n), h -
+                        6); });
+            }
+
+            function drawPie(canvas, labels, vals) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const cx = w / 2,
+                    cy = h / 2,
+                    r = Math.min(w, h) / 2 - 16;
+                const total = vals.reduce((a, b) => a + b, 0) || 1;
+                let ang = -Math.PI / 2;
+                const cols = [CV, CY, CA, '#ff5e8a', '#2fa860', '#c98a5e', '#a8651f', '#7a6a5c'];
+                vals.forEach((v, i) => {
+                    const sl = (v / total) * Math.PI * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, r, ang, ang + sl);
+                    ctx.closePath();
+                    ctx.fillStyle = cols[i % cols.length];
+                    ctx.fill();
+                    ang += sl;
+                });
+                ctx.fillStyle = '#1e293b';
+                ctx.font = '9px JetBrains Mono,monospace';
+                ctx.textAlign = 'left';
+                labels.forEach((l, i) => { ctx.fillStyle = cols[i % cols.length];
+                    ctx.fillRect(4, 4 + i * 11, 7, 7);
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText(l + ' (' + fmt(vals[i] / total * 100, 1) + '%)', 14, 10 + i * 11); });
+            }
+
+            function drawBox(canvas, vals) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const p = { l: 34, r: 14, t: 16, b: 20 };
+                const s = [...vals].sort((a, b) => a - b),
+                    n = s.length;
+                const q1 = s[Math.floor(n * 0.25)],
+                    q2 = s[Math.floor(n * 0.5)],
+                    q3 = s[Math.floor(n * 0.75)];
+                const mn = s[0],
+                    mx = s[n - 1];
+                const pw = w - p.l - p.r,
+                    ph = h - p.t - p.b;
+                const toY = v => p.t + ph - ((v - mn) / ((mx - mn) || 1)) * ph;
+                axes(ctx, w, h, p);
+                const cx = p.l + pw / 2;
+                ctx.strokeStyle = CV;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(cx, toY(mn));
+                ctx.lineTo(cx, toY(q1));
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(cx, toY(q3));
+                ctx.lineTo(cx, toY(mx));
+                ctx.stroke();
+                ctx.fillStyle = CV + '33';
+                ctx.fillRect(cx - 40, toY(q3), 80, toY(q1) - toY(q3));
+                ctx.strokeRect(cx - 40, toY(q3), 80, toY(q1) - toY(q3));
+                ctx.strokeStyle = CY;
+                ctx.beginPath();
+                ctx.moveTo(cx - 40, toY(q2));
+                ctx.lineTo(cx + 40, toY(q2));
+                ctx.stroke();
+                ctx.fillStyle = '#1e293b';
+                ctx.font = '9px JetBrains Mono,monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText('min ' + fmt(mn, 2), cx + 46, toY(mn));
+                ctx.fillText('Q1 ' + fmt(q1, 2), cx + 46, toY(q1));
+                ctx.fillText('median ' + fmt(q2, 2), cx + 46, toY(q2));
+                ctx.fillText('Q3 ' + fmt(q3, 2), cx + 46, toY(q3));
+                ctx.fillText('max ' + fmt(mx, 2), cx + 46, toY(mx));
+            }
+
+            function drawHeatmap(canvas, vals) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const n = vals.length,
+                    cols = Math.ceil(Math.sqrt(n)),
+                    rows = Math.ceil(n / cols);
+                const cw = w / cols,
+                    ch = h / rows,
+                    mx = Math.max(...vals),
+                    mn = Math.min(...vals);
+                vals.forEach((v, i) => {
+                    const r = Math.floor(i / cols),
+                        c = i % cols,
+                        t = (v - mn) / ((mx - mn) || 1);
+                    ctx.fillStyle =
+                        `rgba(${Math.round(56+t*180)},${Math.round(217-t*140)},${Math.round(192-t*150)},0.9)`;
+                    ctx.fillRect(c * cw + 1, r * ch + 1, cw - 2, ch - 2);
+                });
+            }
+
+            function drawCandle(canvas, rows) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const p = { l: 34, r: 10, t: 14, b: 20 };
+                const pw = w - p.l - p.r,
+                    ph = h - p.t - p.b,
+                    n = rows.length;
+                const allV = rows.flatMap(r => [r[1], r[2]]);
+                const mx = Math.max(...allV),
+                    mn = Math.min(...allV);
+                const toY = v => p.t + ph - ((v - mn) / ((mx - mn) || 1)) * ph;
+                axes(ctx, w, h, p);
+                rows.forEach((r, i) => {
+                    const [o, hi, lo, cl] = r,
+                        x = p.l + (i + 0.5) * (pw / n),
+                        up = cl >= o;
+                    ctx.strokeStyle = up ? '#4ade80' : '#f26464';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x, toY(hi));
+                    ctx.lineTo(x, toY(lo));
+                    ctx.stroke();
+                    ctx.fillStyle = up ? '#4ade80' : '#f26464';
+                    const bw = Math.max(pw / n - 4, 3),
+                        yo = toY(Math.max(o, cl)),
+                        yc = toY(Math.min(o, cl));
+                    ctx.fillRect(x - bw / 2, yo, bw, Math.max(yc - yo, 1));
+                });
+            }
+
+            document.getElementById('chartDrawBtn').addEventListener('click', () => {
+                const err = document.getElementById('chartError'),
+                    card = document.getElementById('chartCard');
+                err.textContent = '';
+                card.hidden = true;
+                const canvas = document.getElementById('chartCanvas');
+                try {
+                    if (ctype === 'candle') {
+                        const rows = document.getElementById('chartOhlc').value.trim().split('\n').map(l => l
+                            .split(',').map(Number)).filter(r => r.length === 4 && !r.some(Number.isNaN));
+                        if (rows.length < 1) throw new Error('Enter at least one OHLC row.');
+                        drawCandle(canvas, rows);
+                    } else if (ctype === 'scatter') {
+                        const xs = parseNums(document.getElementById('chartX').value),
+                            ys = parseNums(document.getElementById('chartY').value);
+                        if (xs.length < 2 || ys.length < 2 || xs.length !== ys.length) throw new Error(
+                            'X and Y need equal length, ≥2 values.');
+                        const n = xs.length,
+                            mx = mean(xs),
+                            my = mean(ys);
+                        let num = 0,
+                            den = 0;
+                        xs.forEach((x, i) => { num += (x - mx) * (ys[i] - my);
+                            den += (x - mx) ** 2; });
+                        const slope = den ? num / den : 0,
+                            intercept = my - slope * mx;
+                        drawScatter(canvas, xs, ys, slope, intercept);
+                    } else if (ctype === 'pie') {
+                        const { labels, vals } = parseLabeled(document.getElementById('chartX').value);
+                        if (vals.length < 1) throw new Error('Enter at least one value.');
+                        drawPie(canvas, labels, vals);
+                    } else if (ctype === 'hist') {
+                        const vals = parseNums(document.getElementById('chartX').value);
+                        if (vals.length < 3) throw new Error('Enter at least 3 values.');
+                        drawHistogram(canvas, vals, Math.min(12, Math.max(5, Math.round(Math.sqrt(vals.length)))));
+                    } else if (ctype === 'box' || ctype === 'violin') {
+                        const vals = parseNums(document.getElementById('chartX').value);
+                        if (vals.length < 4) throw new Error('Enter at least 4 values.');
+                        drawBox(canvas, vals);
+                    } else if (ctype === 'heatmap') {
+                        const vals = parseNums(document.getElementById('chartX').value);
+                        if (vals.length < 2) throw new Error('Enter at least 2 values.');
+                        drawHeatmap(canvas, vals);
+                    } else {
+                        const { labels, vals } = parseLabeled(document.getElementById('chartX').value);
+                        if (vals.length < 1) throw new Error('Enter at least one value.');
+                        drawBarLine(canvas, labels, vals, ctype);
+                    }
+                    card.hidden = false;
+                } catch (e) { err.textContent = e.message; }
+            });
+            document.getElementById('chartClearBtn').addEventListener('click', () => {
+                document.getElementById('chartX').value = '';
+                document.getElementById('chartY').value = '';
+                document.getElementById('chartOhlc').value = '';
+                document.getElementById('chartError').textContent = '';
+                document.getElementById('chartCard').hidden = true;
+            });
+            document.getElementById('chartExportPng').addEventListener('click', () => exportPNG(
+                'statlab-chart.png', document.getElementById('chartCanvas')));
+            document.getElementById('chartExportCsv').addEventListener('click', () => {
+                const data = parseNums(document.getElementById('chartX').value);
+                if (!data.length) return;
+                const rows = [
+                    ['value'],
+                    ...data.map(v => [v])
+                ];
+                exportCSV('statlab-chart-data.csv', rows);
+            });
+            document.getElementById('chartExportJson').addEventListener('click', () => {
+                const data = parseNums(document.getElementById('chartX').value);
+                if (!data.length) return;
+                exportJSON('statlab-chart-data.json', { values: data });
+            });
+        })();
+
+        // ---- TRADING ----
+        (function() {
+            let lastResult = null;
+
+            function sma(arr, n) { return arr.map((_, i) => i < n - 1 ? null : arr.slice(i - n + 1, i + 1).reduce((a,
+                    b) => a + b, 0) / n); }
+
+            function ema(arr, n) { const k = 2 / (n + 1);
+                let prev; return arr.map((v, i) => { if (i === 0) { prev = v; return v; } prev = v * k + prev * (1 - k); return prev; }); }
+
+            function rsi(arr, n) {
+                const out = new Array(arr.length).fill(null);
+                let gains = 0,
+                    losses = 0;
+                for (let i = 1; i < arr.length; i++) {
+                    const ch = arr[i] - arr[i - 1],
+                        g = Math.max(ch, 0),
+                        l = Math.max(-ch, 0);
+                    if (i <= n) { gains += g;
+                        losses += l; if (i === n) { out[i] = losses === 0 ? 100 : 100 - 100 / (1 + gains / losses); } } else {
+                        gains = (gains * (n - 1) + g) / n;
+                        losses = (losses * (n - 1) + l) / n;
+                        out[i] = losses === 0 ? 100 : 100 - 100 / (1 + gains / losses); }
+                }
+                return out;
+            }
+
+            function drawTrading(canvas, prices, smaArr, upperBB, lowerBB) {
+                const { ctx, w, h } = setupCanvas(canvas);
+                const p = { l: 36, r: 10, t: 14, b: 20 };
+                const pw = w - p.l - p.r,
+                    ph = h - p.t - p.b,
+                    n = prices.length;
+                const all = [...prices, ...upperBB.filter(v => v !== null), ...lowerBB.filter(v => v !== null)];
+                const mx = Math.max(...all),
+                    mn = Math.min(...all);
+                const toX = i => p.l + (i / (n - 1)) * pw,
+                    toY = v => p.t + ph - ((v - mn) / ((mx - mn) || 1)) * ph;
+                axes(ctx, w, h, p);
+
+                function line(arr, color, width, dash) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = width;
+                    if (dash) ctx.setLineDash(dash);
+                    else ctx.setLineDash([]);
+                    ctx.beginPath();
+                    let started = false;
+                    arr.forEach((v, i) => { if (v === null) return;
+                        const x = toX(i),
+                            y = toY(v); if (!started) { ctx.moveTo(x, y);
+                            started = true; } else ctx.lineTo(x, y); });
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+                line(upperBB, CA + '99', 1.3, [4, 3]);
+                line(lowerBB, CA + '99', 1.3, [4, 3]);
+                line(prices, CY, 2.2);
+                line(smaArr, CV, 1.8);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '9px JetBrains Mono,monospace';
+                ctx.textAlign = 'left';
+                ctx.fillText(fmt(mx, 1), 2, p.t + 8);
+                ctx.textAlign = 'left';
+                ctx.fillText(fmt(mn, 1), 2, h - p.b - 2);
+            }
+
+            document.getElementById('tdCalcBtn').addEventListener('click', () => {
+                const err = document.getElementById('tdError'),
+                    grid = document.getElementById('tdGrid'),
+                    chartCard = document.getElementById('tdChartCard');
+                err.textContent = '';
+                grid.hidden = true;
+                chartCard.hidden = true;
+                try {
+                    const prices = parseNums(document.getElementById('tdPrices').value);
+                    const n = parseInt(document.getElementById('tdWindow').value, 10);
+                    const rf = parseFloat(document.getElementById('tdRf').value) / 100;
+                    if (prices.length < Math.max(n + 1, 5)) throw new Error('Need at least ' + Math.max(n +
+                        1, 5) + ' prices for window n=' + n + '.');
+                    const smaArr = sma(prices, n),
+                        emaArr = ema(prices, n);
+                    const sd_ = [];
+                    for (let i = 0; i < prices.length; i++) { if (i < n - 1) { sd_.push(null); continue; } const win =
+                            prices.slice(i - n + 1, i + 1);
+                        const m = smaArr[i];
+                        sd_.push(Math.sqrt(win.reduce((a, v) => a + (v - m) ** 2, 0) / n)); }
+                    const upperBB = smaArr.map((m, i) => m === null ? null : m + 2 * sd_[i]);
+                    const lowerBB = smaArr.map((m, i) => m === null ? null : m - 2 * sd_[i]);
+                    const rsiArr = rsi(prices, Math.min(n, prices.length - 1));
+                    const rets = [];
+                    for (let i = 1; i < prices.length; i++) rets.push((prices[i] - prices[i - 1]) / prices[i -
+                    1]);
+                    const meanRet = mean(rets),
+                        volRet = sd(rets, true);
+                    const annVol = volRet * Math.sqrt(252) * 100;
+                    const annRet = meanRet * 252;
+                    const sharpe = (annRet - rf) / (volRet * Math.sqrt(252) || 1e-9);
+                    const totalReturn = ((prices[prices.length - 1] - prices[0]) / prices[0]) * 100;
+                    const lastRsi = [...rsiArr].reverse().find(v => v !== null);
+                    grid.innerHTML =
+                        tile('Latest price', fmt(prices[prices.length - 1], 2), { hi: true }) +
+                        tile('Total return', fmt(totalReturn, 2) + '%', { cyan: true }) +
+                        tile('SMA(' + n + ')', fmt(smaArr[smaArr.length - 1], 2)) +
+                        tile('EMA(' + n + ')', fmt(emaArr[emaArr.length - 1], 2)) +
+                        tile('RSI', lastRsi !== undefined ? fmt(lastRsi, 1) : '—') +
+                        tile('Daily volatility', fmt(volRet * 100, 3) + '%') +
+                        tile('Annualized vol.', fmt(annVol, 2) + '%') +
+                        tile('Annualized return', fmt(annRet * 100, 2) + '%') +
+                        tile('Sharpe ratio', fmt(sharpe, 3), { wide: true, hi: true });
+                    grid.hidden = false;
+                    drawTrading(document.getElementById('tdCanvas'), prices, smaArr, upperBB, lowerBB);
+                    chartCard.hidden = false;
+                    lastResult = {
+                        prices,
+                        n,
+                        sma: smaArr,
+                        ema: emaArr,
+                        upperBB,
+                        lowerBB,
+                        rsi: rsiArr,
+                        returns: rets,
+                        annualizedVolPct: annVol,
+                        annualizedReturnPct: annRet * 100,
+                        sharpeRatio: sharpe,
+                        totalReturnPct: totalReturn
+                    };
+                } catch (e) { err.textContent = e.message; }
+            });
+            document.getElementById('tdClearBtn').addEventListener('click', () => {
+                document.getElementById('tdPrices').value = '';
+                document.getElementById('tdError').textContent = '';
+                document.getElementById('tdGrid').hidden = true;
+                document.getElementById('tdChartCard').hidden = true;
+                lastResult = null;
+            });
+            document.getElementById('tdExportPng').addEventListener('click', () => exportPNG(
+                'statlab-trading.png', document.getElementById('tdCanvas')));
+            document.getElementById('tdExportCsv').addEventListener('click', () => {
+                if (!lastResult) return;
+                const rows = [
+                    ['i', 'price', 'sma', 'ema', 'upperBB', 'lowerBB', 'rsi']
+                ];
+                lastResult.prices.forEach((pr, i) => rows.push([i, pr, lastResult.sma[i], lastResult.ema[
+                    i], lastResult.upperBB[i], lastResult.lowerBB[i], lastResult.rsi[i]]));
+                exportCSV('statlab-trading.csv', rows);
+            });
+            document.getElementById('tdExportJson').addEventListener('click', () => { if (lastResult) exportJSON(
+                    'statlab-trading.json', lastResult); });
+        })();
+
+        // ---- EXPORT HELPERS ----
+        function downloadBlob(filename, content, mime) {
+            const blob = new Blob([content], { type: mime });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+
+        function toCSV(rows) { return rows.map(r => r.map(v => { v = String(v); return /[",\n]/.test(v) ? '"' + v.replace(
+                /"/g, '""') + '"' : v; }).join(',')).join('\n'); }
+
+        function exportCSV(filename, rows) { downloadBlob(filename, toCSV(rows), 'text/csv'); }
+
+        function exportJSON(filename, obj) { downloadBlob(filename, JSON.stringify(obj, null, 2), 'application/json'); }
+
+        function exportPNG(filename, canvas) { canvas.toBlob(b => { const a = document.createElement('a');
+                a.href = URL.createObjectURL(b);
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(a.href), 2000); }); }
+
+        // ---- INIT ----
+        updateBottomBar();
+    </script>
+</body>
+  </html>
